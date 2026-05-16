@@ -3,6 +3,7 @@ import OceanHomeScreen from './components/OceanScreen/OceanHomeScreen'
 import FishDetails from './components/FishDetails'
 
 import RegionScreen from './components/screens/RegionScreen'
+import DrawingScreen from './components/drawing/Drawingscreen'
 
 export default function AppRouter(props) {
 
@@ -68,6 +69,7 @@ export default function AppRouter(props) {
                     />
                 } />
                 <Route path='/fish/:slug' element={<FishDetails />} />
+                <Route path='/draw' element={<DrawingScreen />} />
             </Routes>
         </BrowserRouter>
     )
