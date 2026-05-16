@@ -2,14 +2,15 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import modrakModel from '../assets/FishModels/modrak.glb'
-import pisanicaModel from '../assets/FishModels/pisanica.glb'
-import stripedcroakerModel from '../assets/FishModels/stripedcroaker.glb'
+import conicaltunicate from '../assets/FishModels/conicaltunicate.glb'
+import crnik from '../assets/FishModels/crnik.glb'
+import blackeyedgrandmother from '../assets/FishModels/blackeyedgrandmother.glb'
+
 
 const fish = [
-  { id: 1, name: 'Frostie', species: 'Cold Water Drifter', model: modrakModel },
-  { id: 2, name: 'Blubb', species: 'Arctic Glider', model: pisanicaModel },
-  { id: 3, name: 'Chillo', species: 'North Current Rider', model: stripedcroakerModel },
+  { id: 1, name: 'Conical Sea Squirt(Koničasti Plaščar)', species: 'Aplidium conicum', model: conicaltunicate },
+  { id: 2, name: 'Damselfish(Črnik)', species: ' Mediterranean chromis', model: crnik },
+  { id: 3, name: 'Longstriped blenny(Črnoboka babica)', species: 'Parablennius rouxi', model: blackeyedgrandmother },
 ]
 
 export default function NorthOceanScreen() {
@@ -17,7 +18,7 @@ export default function NorthOceanScreen() {
 
   return (
     <div className="region-screen">
-      <h1 className="region-title">North Ocean</h1>
+      <h1 className="region-title">OBALNI PAS SKAL</h1>
 
       <div className="fish-grid">
         {fish.map((f) => (
@@ -30,7 +31,7 @@ export default function NorthOceanScreen() {
           ← Back to Map
         </button>
         <button className="nav-btn" onClick={() => navigate('/reefs')}>
-          The Reefs →
+          PEŠČENO MORSKI PAS →
         </button>
       </div>
     </div>

@@ -2,28 +2,31 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import blackeyedgrandmotherModel from '../assets/FishModels/blackeyedgrandmother.glb'
-import commoncuttlefishModel from '../assets/FishModels/commoncuttlefish.glb'
-import conicaltunicateModel from '../assets/FishModels/conicaltunicate.glb'
+import stripedcroaker from '../assets/FishModels/stripedcroaker.glb'
+import modrak from '../assets/FishModels/modrak.glb'
+import gentlehuntress from '../assets/FishModels/gentlehuntress.glb'
+
+ 
+ 
 
 const fish = [
   {
     id: 1,
-    name: 'Glumbo',
-    species: 'Deep Sea Floater',
-    model: blackeyedgrandmotherModel,
+    name: 'Striped Croaker(Progasti Gruntar)',
+    species: 'Sciaenidae',
+    model: stripedcroaker,
   },
   {
     id: 2,
-    name: 'Zappy',
-    species: 'Shadow Swimmer',
-    model: commoncuttlefishModel,
+    name: 'Modrak (Modrak)',
+    species: 'Sparidae',
+    model: modrak,
   },
   {
     id: 3,
-    name: 'Murklet',
-    species: 'Cave Glider',
-    model: conicaltunicateModel,
+    name: 'Gentle Huntress (Nežna Lovka)',
+    species: 'Scorpaenidae',
+    model: gentlehuntress,
   },
 ]
 
@@ -32,7 +35,7 @@ export default function TrenchScreen() {
 
   return (
     <div className="region-screen">
-      <h1 className="region-title">The Deep Trench</h1>
+      <h1 className="region-title">ODPRTO OBALNO MORJE</h1>
 
       <div className="fish-grid">
         {fish.map((f) => (
@@ -46,7 +49,7 @@ export default function TrenchScreen() {
         </button>
 
         <button className="nav-btn" onClick={() => navigate('/north-ocean')}>
-          North Ocean →
+          OBALNI PAS SKAL →
         </button>
       </div>
     </div>
