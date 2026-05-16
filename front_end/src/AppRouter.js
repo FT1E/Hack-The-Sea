@@ -4,6 +4,7 @@ import FishDetails from './components/FishDetails'
 import GameScreen from './components/screens/GameScreen'
 
 import RegionScreen from './components/screens/RegionScreen'
+import DrawingScreen from './components/drawing/Drawingscreen'
 
 export default function AppRouter(props) {
 
@@ -70,6 +71,7 @@ export default function AppRouter(props) {
                 } />
                 <Route path='/fish/:slug' element={<FishDetails />} />
                 <Route path='/game' element={<GameScreen />} />
+                <Route path='/draw' element={<DrawingScreen />} />
             </Routes>
         </BrowserRouter>
     )
