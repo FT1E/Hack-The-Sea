@@ -9,18 +9,21 @@ const fish = [
     name: 'Striped Croaker(Progasti Gruntar)',
     species: 'Sciaenidae',
     model: '/FishModels/stripedcroaker.glb',
+    slug: 'stripedcroaker',
   },
   {
     id: 2,
     name: 'Modrak (Modrak)',
     species: 'Sparidae',
     model: '/FishModels/modrak.glb',
+    slug: 'modrak',
   },
   {
     id: 3,
     name: 'Gentle Huntress (Nežna Lovka)',
     species: 'Scorpaenidae',
     model: '/FishModels/gentlehuntress.glb',
+    slug: 'gentlehuntress',
   },
 ]
 

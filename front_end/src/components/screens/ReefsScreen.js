@@ -9,9 +9,9 @@ import './RegionScreen.css'
 
 
 const fish = [
-  { id: 1, name: 'Flat Head (Ploščata Glava)', species: 'Triglidae', model: '/FishModels/flathead.glb' },
-  { id: 2, name: 'Common Cuttle Fish(Navadna Sipa)', species: 'Sepia officinalis', model: '/FishModels/commoncuttlefish.glb' },
-  { id: 3, name: 'Pisanica(pisanica)', species: 'Labridae', model: '/FishModels/pisanica.glb' },
+  { id: 1, name: 'Flat Head (Ploščata Glava)', species: 'Triglidae', model: '/FishModels/flathead.glb', slug:'flathead' },
+  { id: 2, name: 'Common Cuttle Fish(Navadna Sipa)', species: 'Sepia officinalis', model: '/FishModels/commoncuttlefish.glb' , slug:'commoncuttlefish' },
+  { id: 3, name: 'Pisanica(pisanica)', species: 'Labridae', model: '/FishModels/pisanica.glb', slug:'pisanica' },
 ]
 
 export default function ReefsScreen() {

@@ -8,9 +8,9 @@ import './RegionScreen.css'
 
 
 const fish = [
-  { id: 1, name: 'Conical Sea Squirt(Koničasti Plaščar)', species: 'Aplidium conicum', model: '/FishModels/conicaltunicate.glb' },
-  { id: 2, name: 'Damselfish(Črnik)', species: ' Mediterranean chromis', model: '/FishModels/crnik.glb' },
-  { id: 3, name: 'Longstriped blenny(Črnoboka babica)', species: 'Parablennius rouxi', model: '/FishModels/blackeyedgrandmother.glb' },
+  { id: 1, name: 'Conical Sea Squirt(Koničasti Plaščar)', species: 'Aplidium conicum', model: '/FishModels/conicaltunicate.glb' , slug:'conicaltunicate'},
+  { id: 2, name: 'Damselfish(Črnik)', species: ' Mediterranean chromis', model: '/FishModels/crnik.glb', slug:'crnik' },
+  { id: 3, name: 'Longstriped blenny(Črnoboka babica)', species: 'Parablennius rouxi', model: '/FishModels/blackeyedgrandmother.glb', slug:'blackeyedgrandmother' },
 ]
 
 export default function NorthOceanScreen() {
