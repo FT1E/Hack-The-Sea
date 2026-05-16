@@ -4,7 +4,7 @@
 // ============================================================
 
 export const FISH_CONFIG = {
-  "Fish1": {
+  "conicaltunicate": {
     label: "Conical Sea Squirt (Koničasti Plaščar)",
     species: "Aplidium conicum",
     model: "/FishModels/conicaltunicate.glb",
@@ -14,7 +14,7 @@ export const FISH_CONFIG = {
     description: "A colonial sea squirt commonly found on rocky coastal habitats.",
   },
 
-  "Fish2": {
+  "crnik": {
     label: "Damselfish (Črnik)",
     species: "Mediterranean chromis",
     model: "/FishModels/crnik.glb",
@@ -24,7 +24,7 @@ export const FISH_CONFIG = {
     description: "A small Mediterranean reef fish often swimming in schools.",
   },
 
-  "Fish3": {
+  "blackeyedgrandmother": {
     label: "Longstriped Blenny (Črnoboka babica)",
     species: "Parablennius rouxi",
     model: "/FishModels/blackeyedgrandmother.glb",
@@ -34,7 +34,7 @@ export const FISH_CONFIG = {
     description: "A blenny species recognized by its elongated striped appearance.",
   },
 
-  "Fish4": {
+  "flathead": {
     label: "Flat Head (Ploščata Glava)",
     species: "Triglidae",
     model: "/FishModels/flathead.glb",
@@ -44,7 +44,7 @@ export const FISH_CONFIG = {
     description: "A bottom-dwelling fish with a broad flattened head.",
   },
 
-  "Fish5": {
+  "commoncuttlefish": {
     label: "Common Cuttle Fish (Navadna Sipa)",
     species: "Sepia officinalis",
     model: "/FishModels/commoncuttlefish.glb",
@@ -54,7 +54,7 @@ export const FISH_CONFIG = {
     description: "An intelligent cephalopod known for camouflage abilities.",
   },
 
-  "Fish6": {
+  "pisanica": {
     label: "Pisanica",
     species: "Labridae",
     model: "/FishModels/pisanica.glb",
@@ -64,7 +64,7 @@ export const FISH_CONFIG = {
     description: "A colorful wrasse species commonly found near rocky reefs.",
   },
 
-  "Fish7": {
+  "stripedcroaker": {
     label: "Striped Croaker (Progasti Gruntar)",
     species: "Sciaenidae",
     model: "/FishModels/stripedcroaker.glb",
@@ -74,7 +74,7 @@ export const FISH_CONFIG = {
     description: "A croaker fish distinguished by its striped body pattern.",
   },
 
-  "Fish8": {
+  "modrak": {
     label: "Modrak",
     species: "Sparidae",
     model: "/FishModels/modrak.glb",
@@ -84,7 +84,7 @@ export const FISH_CONFIG = {
     description: "A sea bream species found in coastal Mediterranean waters.",
   },
 
-  "Fish9": {
+  "gentlehuntress": {
     label: "Gentle Huntress (Nežna Lovka)",
     species: "Scorpaenidae",
     model: "/FishModels/gentlehuntress.glb",
