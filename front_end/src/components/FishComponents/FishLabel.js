@@ -6,6 +6,7 @@ export default function FishLabel({ fish }) {
       <p className="fish-name">
         {fish?.name ?? 'Fish Name'}
       </p>
+
       <p className="fish-latin-name">
         {fish?.species ?? 'Species Name'}
       </p>

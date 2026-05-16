@@ -2,10 +2,29 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
+import glumboModel from '../assets/FishModels/BlackEyedGrandmother.glb'
+import zappyModel from '../assets/FishModels/CommonCuttleFish.glb'
+import murkletModel from '../assets/FishModels/ConicalTunicate.glb'
+
 const fish = [
-  { id: 1, name: 'Glumbo', species: 'Deep Sea Floater' },
-  { id: 2, name: 'Zappy', species: 'Shadow Swimmer' },
-  { id: 3, name: 'Murklet', species: 'Cave Glider' },
+  {
+    id: 1,
+    name: 'Glumbo',
+    species: 'Deep Sea Floater',
+    model: glumboModel,
+  },
+  {
+    id: 2,
+    name: 'Zappy',
+    species: 'Shadow Swimmer',
+    model: zappyModel,
+  },
+  {
+    id: 3,
+    name: 'Murklet',
+    species: 'Cave Glider',
+    model: murkletModel,
+  },
 ]
 
 export default function TrenchScreen() {
@@ -25,6 +44,7 @@ export default function TrenchScreen() {
         <button className="nav-btn" onClick={() => navigate('/')}>
           ← Back to Map
         </button>
+
         <button className="nav-btn" onClick={() => navigate('/north-ocean')}>
           North Ocean →
         </button>
