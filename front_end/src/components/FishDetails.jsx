@@ -28,24 +28,25 @@ export default function FishDetails() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("info");
 
+  const fetchData = async () =>
+  {
+      try {
+        const response = await server_api.get(`/fish?slug=${remoteSlug}`);
+        setFishData(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        setFetchError(true);
+        setLoading(false);
+      }
+  }
+
   useEffect(() => {
     setLoading(true);
     setFetchError(false);
     setFishData(null);
 
-
-    server_api.ge
-
-    try {
-    const response = await server_api.get(`/fish?slug=${remoteSlug}`);
-    setFishData(response.data);
-    setLoading(false);
-    } catch (err) {
-    console.error(err);
-    setFetchError(true);
-    setLoading(false);
-    }
-
+    fetchData();
   }, [slug]);
 
   return (
