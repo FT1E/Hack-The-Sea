@@ -2,14 +2,16 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-//import crnikModel from '/FishModels/crnik.glb'
-//import flatheadModel from '/FishModels/flathead.glb'
-//import gentlehuntressModel from '/FishModels/gentlehuntress.glb'
+//import flatHead from '../assets/FishModels/flathead.glb'
+//import commoncuttlefish from '../assets/FishModels/commoncuttlefish.glb'
+//import pisanica from '../assets/FishModels/pisanica.glb'
+
+
 
 const fish = [
-  { id: 1, name: 'Bloopy', species: 'Coral Drifter', model: '/FishModels/crnik.glb' },
-  { id: 2, name: 'Finzo', species: 'Bubble Swimmer', model: '/FishModels/flathead.glb' },
-  { id: 3, name: 'Splashy', species: 'Reef Glider', model: '/FishModels/gentlehuntress.glb' },
+  { id: 1, name: 'Flat Head (Ploščata Glava)', species: 'Triglidae', model: '/FishModels/flathead.glb' },
+  { id: 2, name: 'Common Cuttle Fish(Navadna Sipa)', species: 'Sepia officinalis', model: '/FishModels/commoncuttlefish.glb' },
+  { id: 3, name: 'Pisanica(pisanica)', species: 'Labridae', model: '/FishModels/pisanica.glb' },
 ]
 
 export default function ReefScreen() {
@@ -17,7 +19,7 @@ export default function ReefScreen() {
 
   return (
     <div className="region-screen">
-      <h1 className="region-title">The Reefs</h1>
+      <h1 className="region-title">PEŠČENO MORSKI PAS</h1>
 
       <div className="fish-grid">
         {fish.map((f) => (
@@ -30,7 +32,7 @@ export default function ReefScreen() {
           ← Back to Map
         </button>
         <button className="nav-btn" onClick={() => navigate('/trench')}>
-          Deep Trench →
+          ODPRTO OBALNO MORJE →
         </button>
       </div>
     </div>
