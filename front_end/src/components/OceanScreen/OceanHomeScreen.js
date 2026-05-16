@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import OceanRegion from './OceanRegion';
+import sea_water_photo from '../../media/sea_water_photo.jpg';
 
 export default function OceanHomeScreen (props) {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export default function OceanHomeScreen (props) {
     <div style={styles.container}>
       {/* 1. The Ocean Background Image */}
       <img 
-        src="https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=1200&q=80" 
+        src={sea_water_photo} 
         alt="Ocean" 
         style={styles.image}
       />
