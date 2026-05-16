@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
 import OceanHomeScreen from './components/OceanScreen/OceanHomeScreen'
 import FishDetails from './components/FishDetails'
+import GameScreen from './components/screens/GameScreen'
 
 import RegionScreen from './components/screens/RegionScreen'
 
@@ -68,6 +69,7 @@ export default function AppRouter(props) {
                     />
                 } />
                 <Route path='/fish/:slug' element={<FishDetails />} />
+                <Route path='/game' element={<GameScreen />} />
             </Routes>
         </BrowserRouter>
     )
