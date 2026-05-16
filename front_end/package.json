@@ -21,10 +21,9 @@
     "zustand": "^5.0.13"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": [
@@ -45,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "autoprefixer": "^10.5.0",
     "postcss": "^8.5.14",
     "tailwindcss": "^4.3.0"

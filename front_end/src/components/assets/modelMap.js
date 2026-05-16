@@ -1,24 +1,27 @@
 // src/components/assets/modelMap.js
-import blackeyedgrandmother from './FishModels/blackeyedgrandmother.glb';
-import commoncuttlefish from './FishModels/commoncuttlefish.glb';
-import conicaltunicate from './FishModels/conicaltunicate.glb';
-import crnik from './FishModels/crnik.glb';
-import flathead from './FishModels/flathead.glb';
-import gentlehuntress from './FishModels/gentlehuntress.glb';
-import modrak from './FishModels/modrak.glb';
-import pisanica from './FishModels/pisanica.glb';
-import stripedcroaker from './FishModels/stripedcroaker.glb';
 
-const modelMap = {
-  blackeyedgrandmother,
-  commoncuttlefish,
-  conicaltunicate,
-  crnik,
-  flathead,
-  gentlehuntress,
-  modrak,
-  pisanica,
-  stripedcroaker,
+export const modelMap = {
+  blackeyedgrandmother: "/FishModels/blackeyedgrandmother.glb",
+  commoncuttlefish:     "/FishModels/commoncuttlefish.glb",
+  conicaltunicate:      "/FishModels/conicaltunicate.glb",
+  crnik:                "/FishModels/crnik.glb",
+  flathead:             "/FishModels/flathead.glb",
+  gentlehuntress:       "/FishModels/gentlehuntress.glb",
+  modrak:               "/FishModels/modrak.glb",
+  pisanica:             "/FishModels/pisanica.glb",
+  stripedcroaker:       "/FishModels/stripedcroaker.glb",
+};
+
+export const slugMap = {
+  blackeyedgrandmother: "crnoboka-babica",
+  commoncuttlefish:     "navadna-sipa",
+  conicaltunicate:      "konicasti-plascar",
+  crnik:                "crnik",
+  flathead:             "ploskoglavec",
+  gentlehuntress:       "nezna-lovkarica",
+  modrak:               "modrak",
+  pisanica:             "pisanica",
+  stripedcroaker:       "progasti-krulec",
 };
 
 export default modelMap;

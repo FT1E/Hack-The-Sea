@@ -2,6 +2,8 @@ import { Suspense, useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
+import { modelMap, slugMap } from './assets/modelMap';
+
 
 function FishModel({ modelPath }) {
   const { scene } = useGLTF(modelPath);
@@ -17,7 +19,9 @@ function FishModel({ modelPath }) {
 
 export default function FishDetails() {
   const { slug } = useParams();
-  const modelPath = `/FishModels/${slug}.glb`;
+  //const modelPath = `/FishModels/${slug}.glb`;
+  const modelPath = modelMap[slug] ?? null;
+  const remoteSlug = slugMap[slug] ?? slug;
   const [fishData, setFishData] = useState(null);
   const [fetchError, setFetchError] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -28,7 +32,7 @@ export default function FishDetails() {
     setFetchError(false);
     setFishData(null);
 
-    fetch(`http://localhost:4000/fish?slug=${slug}`)
+    fetch(`http://localhost:4000/fish?slug=${remoteSlug}`)
       .then((r) => {
         if (!r.ok) throw new Error("Server error");
         return r.json();
