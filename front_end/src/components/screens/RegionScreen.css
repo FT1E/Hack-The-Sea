@@ -53,3 +53,30 @@
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
 }
+
+/* ── Add this to your existing RegionScreen.css ── */
+
+.draw-btn {
+  display: block;
+  margin: 24px auto 8px;
+  padding: 16px 40px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #00b4d8, #0077b6);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(0, 180, 216, 0.4);
+  transition: transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.draw-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 32px rgba(0, 180, 216, 0.55);
+}
+
+.draw-btn:active {
+  transform: scale(0.97);
+}
