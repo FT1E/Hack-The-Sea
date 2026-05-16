@@ -1,22 +1,28 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-import { useParams } from "react-router";import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import modelMap from './assets/modelMap';
+import { Suspense, useState, useEffect } from "react";
+import { useParams } from "react-router";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, useGLTF } from "@react-three/drei";
+
+function FishModel({ modelPath }) {
+  const { scene } = useGLTF(modelPath);
+  return (
+    <primitive
+      object={scene}
+      scale={1}
+      position={[0, 0, 0]}
+      rotation={[0, Math.PI / 4, 0]}
+    />
+  );
+}
 
 export default function FishDetails() {
   const { slug } = useParams();
-  const modelPath = modelMap[slug] ?? null;
-  const mountRef = useRef(null);
-  const frameRef = useRef(null);
-  const fishRef = useRef(null);
-  const [modelLoaded, setModelLoaded] = useState(false);
-  const [modelError, setModelError] = useState(false);
+  const modelPath = `/FishModels/${slug}.glb`;
   const [fishData, setFishData] = useState(null);
   const [fetchError, setFetchError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("info");
-  
-  // Fetch fish info from proxy
+
   useEffect(() => {
     setLoading(true);
     setFetchError(false);
@@ -38,94 +44,11 @@ export default function FishDetails() {
       });
   }, [slug]);
 
-  // Three.js scene
-  useEffect(() => {
-    const container = mountRef.current;
-    if (!container) return;
-
-    const scene = new THREE.Scene();
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.01, 1000);
-    camera.position.set(0, 0.5, 3);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    renderer.shadowMap.enabled = true;
-    container.appendChild(renderer.domElement);
-
-    scene.add(new THREE.AmbientLight(0xfff4e0, 1.2));
-    const key = new THREE.DirectionalLight(0xffd580, 2.5);
-    key.position.set(3, 4, 3);
-    key.castShadow = true;
-    scene.add(key);
-    const fill = new THREE.DirectionalLight(0x80c8ff, 1.0);
-    fill.position.set(-3, 1, -2);
-    scene.add(fill);
-    const rim = new THREE.DirectionalLight(0xff9040, 0.8);
-    rim.position.set(0, -2, -3);
-    scene.add(rim);
-
-    let cancelled = false;
-    const loader = new GLTFLoader();
-    loader.load(
-      modelPath,
-      (gltf) => {
-        if (cancelled) return;
-        const model = gltf.scene;
-        const box = new THREE.Box3().setFromObject(model);
-        const centre = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-        const maxDim = Math.max(size.x, size.y, size.z);
-        model.position.sub(centre);
-        model.scale.setScalar(2.0 / maxDim);
-        model.traverse((child) => {
-          if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; }
-        });
-        scene.add(model);
-        fishRef.current = model;
-        setModelLoaded(true);
-      },
-      undefined,
-      (err) => { console.error(err); if (!cancelled) setModelError(true); }
-    );
-
-    let t = 0;
-    function animate() {
-      frameRef.current = requestAnimationFrame(animate);
-      t += 0.016;
-      if (fishRef.current) {
-        fishRef.current.rotation.y = t * 0.6;
-        fishRef.current.position.y = Math.sin(t * 0.8) * 0.08;
-      }
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    function onResize() {
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      renderer.setSize(w, h);
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-    }
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelled = true;
-      window.removeEventListener("resize", onResize);
-      cancelAnimationFrame(frameRef.current);
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
-    };
-  }, [modelPath]);
-
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #05111f; font-family: 'DM Sans', sans-serif; color: #e8dfc8; min-height: 100vh; }
 
@@ -148,7 +71,11 @@ export default function FishDetails() {
         }
 
         .bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-        .bubble { position: absolute; border-radius: 50%; border: 1px solid rgba(255,200,100,0.15); animation: rise linear infinite; }
+        .bubble {
+          position: absolute; border-radius: 50%;
+          border: 1px solid rgba(255,200,100,0.15);
+          animation: rise linear infinite;
+        }
         @keyframes rise {
           from { transform: translateY(110vh) scale(0.8); opacity: 0.6; }
           to   { transform: translateY(-10vh) scale(1.1); opacity: 0; }
@@ -177,19 +104,6 @@ export default function FishDetails() {
         }
         .canvas-wrap { width: 100%; height: 520px; position: relative; }
 
-        .overlay {
-          position: absolute; inset: 0;
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          gap: 1rem; z-index: 5;
-        }
-        .fish-loader { font-size: 2.5rem; animation: swim 1.4s ease-in-out infinite; }
-        @keyframes swim {
-          0%,100% { transform: translateX(-8px) rotate(-5deg); }
-          50%      { transform: translateX(8px) rotate(5deg); }
-        }
-        .overlay-text { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,180,60,0.5); }
-        .overlay-hint { font-size: 0.7rem; color: rgba(255,255,255,0.3); margin-top: 0.3rem; }
-
         .viewport-badge {
           position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
           font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
@@ -200,7 +114,6 @@ export default function FishDetails() {
           content: ''; width: 24px; height: 1px; background: rgba(255,180,60,0.2);
         }
 
-        /* Info panel */
         .info-panel {
           grid-column: 2; grid-row: 2;
           padding: 2.5rem 3rem 2.5rem 2rem;
@@ -222,7 +135,6 @@ export default function FishDetails() {
           margin-top: 0.3rem;
         }
 
-        /* Tabs */
         .tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,180,60,0.15); }
         .tab {
           padding: 0.5rem 1.2rem; font-size: 0.65rem; letter-spacing: 0.18em;
@@ -236,7 +148,6 @@ export default function FishDetails() {
 
         .tab-content { display: flex; flex-direction: column; gap: 1.4rem; }
 
-        /* Stats grid */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1.5rem; }
         .stat-item { display: flex; flex-direction: column; gap: 0.25rem; }
         .stat-label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,180,60,0.5); }
@@ -244,31 +155,44 @@ export default function FishDetails() {
 
         .divider { height: 1px; background: linear-gradient(90deg, rgba(255,165,40,0.3) 0%, transparent 100%); }
 
-        /* Description */
         .description-text { font-size: 0.85rem; line-height: 1.75; color: rgba(232,223,200,0.65); }
 
-        /* Fun fact */
         .fun-fact {
           background: rgba(255,165,40,0.05); border: 1px solid rgba(255,165,40,0.12);
           border-left: 3px solid rgba(255,165,40,0.4); padding: 1rem 1.2rem;
           border-radius: 0 4px 4px 0;
         }
-        .fun-fact-label { font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255,165,40,0.5); margin-bottom: 0.5rem; }
+        .fun-fact-label {
+          font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase;
+          color: rgba(255,165,40,0.5); margin-bottom: 0.5rem;
+        }
         .fun-fact-text { font-size: 0.85rem; line-height: 1.6; color: rgba(232,223,200,0.7); }
 
-        /* Taxonomy */
         .taxonomy { display: flex; flex-direction: column; gap: 0.5rem; }
-        .taxon-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .taxon-row {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
         .taxon-rank { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,180,60,0.4); }
         .taxon-name { font-size: 0.82rem; font-style: italic; color: rgba(232,223,200,0.8); }
 
-        /* Loading skeleton */
-        .skeleton { background: rgba(255,255,255,0.05); border-radius: 4px; animation: shimmer 1.5s ease-in-out infinite; }
+        .skeleton {
+          background: rgba(255,255,255,0.05); border-radius: 4px;
+          animation: shimmer 1.5s ease-in-out infinite;
+        }
         @keyframes shimmer { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
 
-        /* Source link */
         .source-link { font-size: 0.65rem; color: rgba(255,180,60,0.35); text-decoration: none; }
         .source-link:hover { color: rgba(255,180,60,0.7); }
+
+        .model-error {
+          width: 100%; height: 100%;
+          display: flex; flex-direction: column; align-items: center; justify-content: center;
+          gap: 0.8rem;
+        }
+        .model-error-icon { font-size: 2.5rem; }
+        .model-error-text { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,100,100,0.6); }
+        .model-error-hint { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
 
         @media (max-width: 768px) {
           .page { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
@@ -281,15 +205,21 @@ export default function FishDetails() {
       `}</style>
 
       <div className="page">
+
         {/* Bubbles */}
         <div className="bubbles">
           {[...Array(12)].map((_, i) => (
-            <div key={i} className="bubble" style={{
-              width: `${6 + (i % 4) * 5}px`, height: `${6 + (i % 4) * 5}px`,
-              left: `${8 + i * 7.5}%`,
-              animationDuration: `${6 + (i % 5) * 2}s`,
-              animationDelay: `${(i * 1.1) % 7}s`,
-            }} />
+            <div
+              key={i}
+              className="bubble"
+              style={{
+                width: `${6 + (i % 4) * 5}px`,
+                height: `${6 + (i % 4) * 5}px`,
+                left: `${8 + i * 7.5}%`,
+                animationDuration: `${6 + (i % 5) * 2}s`,
+                animationDelay: `${(i * 1.1) % 7}s`,
+              }}
+            />
           ))}
         </div>
 
@@ -301,26 +231,30 @@ export default function FishDetails() {
 
         {/* 3D Viewport */}
         <div className="viewport">
-          <div className="canvas-wrap" ref={mountRef}>
-            {!modelLoaded && !modelError && (
-              <div className="overlay">
-                <div className="fish-loader">🐠</div>
-                <div className="overlay-text">Loading model…</div>
-              </div>
-            )}
-            {modelError && (
-              <div className="overlay">
-                <div style={{ fontSize: "2rem" }}>🐟</div>
-                <div className="overlay-text" style={{ color: "rgba(255,100,100,0.6)" }}>Could not load model</div>
-                <div className="overlay-hint">Place your .glb file in /public</div>
-              </div>
-            )}
+          <div className="canvas-wrap">
+            <Canvas camera={{ position: [0, 0.5, 3], fov: 45 }}>
+              <ambientLight color={0xfff4e0} intensity={1.2} />
+              <directionalLight color={0xffd580} position={[3, 4, 3]} intensity={2.5} castShadow />
+              <directionalLight color={0x80c8ff} position={[-3, 1, -2]} intensity={1.0} />
+              <directionalLight color={0xff9040} position={[0, -2, -3]} intensity={0.8} />
+
+              <Suspense fallback={null}>
+                <FishModel modelPath={modelPath} />
+              </Suspense>
+
+              <OrbitControls
+                enableZoom={false}
+                autoRotate
+                autoRotateSpeed={2}
+              />
+            </Canvas>
           </div>
           <div className="viewport-badge">3D Interactive Model</div>
         </div>
 
         {/* Info Panel */}
         <aside className="info-panel">
+
           {/* Name block */}
           <div className="name-block">
             {loading ? (
@@ -342,18 +276,23 @@ export default function FishDetails() {
             )}
           </div>
 
-          {/* Tabs */}
+          {/* Tabs + content */}
           {!loading && !fetchError && fishData && (
             <>
               <div className="tabs">
                 {["info", "description", "taxonomy"].map((tab) => (
-                  <button key={tab} className={`tab ${activeTab === tab ? "active" : ""}`} onClick={() => setActiveTab(tab)}>
+                  <button
+                    key={tab}
+                    className={`tab ${activeTab === tab ? "active" : ""}`}
+                    onClick={() => setActiveTab(tab)}
+                  >
                     {tab}
                   </button>
                 ))}
               </div>
 
               <div className="tab-content">
+
                 {activeTab === "info" && (
                   <>
                     <div className="stats-grid">
@@ -386,14 +325,21 @@ export default function FishDetails() {
                       </div>
                     )}
 
-                    <a href={fishData.sourceUrl} target="_blank" rel="noreferrer" className="source-link">
+                    <a
+                      href={fishData.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="source-link"
+                    >
                       ↗ View original source (yoursea.org)
                     </a>
                   </>
                 )}
 
                 {activeTab === "description" && (
-                  <p className="description-text">{fishData.description || "No description available."}</p>
+                  <p className="description-text">
+                    {fishData.description || "No description available."}
+                  </p>
                 )}
 
                 {activeTab === "taxonomy" && (
@@ -413,9 +359,11 @@ export default function FishDetails() {
                     ))}
                   </div>
                 )}
+
               </div>
             </>
           )}
+
         </aside>
       </div>
     </>
