@@ -30,21 +30,21 @@ export default function OceanHomeScreen (props) {
         {/* Region 1: Top Left / North Ocean */}
         <OceanRegion 
           d="M 0,0 L 500,0 Q 400,250 250,500 L 0,500 Z" 
-          name="North Ocean"
+          name="OBALNI PAS SKAL"
           onClick={() => handleRegionClick('/north-ocean')}
         />
 
         {/* Region 2: Top Right / Reef Zone */}
         <OceanRegion 
           d="M 500,0 L 1000,0 L 1000,600 C 800,500 700,300 500,0 Z" 
-          name="The Reefs"
+          name="PEŠČENO MORSKI PAS"
           onClick={() => handleRegionClick('/reefs')}
         />
 
         {/* Region 3: Deep Trench (Southern Area) */}
         <OceanRegion 
           d="M 0,500 L 250,500 Q 400,250 500,0 C 700,300 800,500 1000,600 L 1000,1000 L 0,1000 Z" 
-          name="The Deep Trench"
+          name="ODPRTO OBALNO MORJE"
           onClick={() => handleRegionClick('/trench')}
         />
 
