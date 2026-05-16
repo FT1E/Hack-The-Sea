@@ -5,6 +5,7 @@ import sea_water_photo from '../../media/sea_water_photo.jpg';
 
 export default function OceanHomeScreen (props) {
   const navigate = useNavigate();
+  const sea_water_gif = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHF3dzdjdnV4M3A5a2duc3pmdWZlY29za2FrbDN2bXE3d3lvZm9tdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OalJFGFBD4D2xn61qb/giphy.gif";
 
   // Handle navigation when a region is clicked
   const handleRegionClick = (targetRoute) => {
@@ -15,7 +16,7 @@ export default function OceanHomeScreen (props) {
     <div style={styles.container}>
       {/* 1. The Ocean Background Image */}
       <img 
-        src={sea_water_photo} 
+        src={sea_water_gif} 
         alt="Ocean" 
         style={styles.image}
       />
