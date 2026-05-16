@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { modelMap, slugMap } from './assets/modelMap';
 
+import server_api from '../services/backend_api'
 
 function FishModel({ modelPath }) {
   const { scene } = useGLTF(modelPath);
@@ -32,20 +33,19 @@ export default function FishDetails() {
     setFetchError(false);
     setFishData(null);
 
-    fetch(`http://localhost:4000/fish?slug=${remoteSlug}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("Server error");
-        return r.json();
-      })
-      .then((data) => {
-        setFishData(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setFetchError(true);
-        setLoading(false);
-      });
+
+    server_api.ge
+
+    try {
+    const response = await server_api.get(`/fish?slug=${remoteSlug}`);
+    setFishData(response.data);
+    setLoading(false);
+    } catch (err) {
+    console.error(err);
+    setFetchError(true);
+    setLoading(false);
+    }
+
   }, [slug]);
 
   return (
