@@ -2,10 +2,26 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
+
 const fish = [
-  { id: 1, name: 'Glumbo', species: 'Deep Sea Floater', slug: 'blackeyedgrandmother', model: '/FishModels/blackeyedgrandmother.glb' },
-  { id: 2, name: 'Zappy', species: 'Shadow Swimmer', slug: 'commoncuttlefish', model: '/FishModels/commoncuttlefish.glb' },
-  { id: 3, name: 'Murklet', species: 'Cave Glider', slug: 'conicaltunicate', model: '/FishModels/conicaltunicate.glb' },
+  {
+    id: 1,
+    name: 'Striped Croaker(Progasti Gruntar)',
+    species: 'Sciaenidae',
+    model: '/FishModels/stripedcroaker.glb',
+  },
+  {
+    id: 2,
+    name: 'Modrak (Modrak)',
+    species: 'Sparidae',
+    model: '/FishModels/modrak.glb',
+  },
+  {
+    id: 3,
+    name: 'Gentle Huntress (Nežna Lovka)',
+    species: 'Scorpaenidae',
+    model: '/FishModels/gentlehuntress.glb',
+  },
 ]
 
 export default function TrenchScreen() {

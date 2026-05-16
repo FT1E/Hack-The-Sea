@@ -2,18 +2,15 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import conicaltunicate from '../assets/FishModels/conicaltunicate.glb'
-import crnik from '../assets/FishModels/crnik.glb'
-import blackeyedgrandmother from '../assets/FishModels/blackeyedgrandmother.glb'
+//import conicaltunicate from '../assets/FishModels/conicaltunicate.glb'
+//import crnik from '../assets/FishModels/crnik.glb'
+//import blackeyedgrandmother from '../assets/FishModels/blackeyedgrandmother.glb'
 
 
 const fish = [
-  { id: 1, name: 'Conical Sea Squirt(Koničasti Plaščar)', species: 'Aplidium conicum', model: conicaltunicate },
-  { id: 2, name: 'Damselfish(Črnik)', species: ' Mediterranean chromis', model: crnik },
-  { id: 3, name: 'Longstriped blenny(Črnoboka babica)', species: 'Parablennius rouxi', model: blackeyedgrandmother },
-  { id: 1, name: 'Frostie', species: 'Cold Water Drifter', slug: 'modrak', model: '/FishModels/modrak.glb' },
-  { id: 2, name: 'Blubb', species: 'Arctic Glider', slug: 'pisanica', model: '/FishModels/pisanica.glb' },
-  { id: 3, name: 'Chillo', species: 'North Current Rider', slug: 'stripedcroaker', model: '/FishModels/stripedcroaker.glb' },
+  { id: 1, name: 'Conical Sea Squirt(Koničasti Plaščar)', species: 'Aplidium conicum', model: '/FishModels/conicaltunicate.glb' },
+  { id: 2, name: 'Damselfish(Črnik)', species: ' Mediterranean chromis', model: '/FishModels/crnik.glb' },
+  { id: 3, name: 'Longstriped blenny(Črnoboka babica)', species: 'Parablennius rouxi', model: '/FishModels/blackeyedgrandmother.glb' },
 ]
 
 export default function NorthOceanScreen() {
