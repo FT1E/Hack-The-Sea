@@ -2,14 +2,14 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import glumboModel from '../assets/FishModels/Crnik.glb'
-import zappyModel from '../assets/FishModels/FlatHead.glb'
-import murkletModel from '../assets/FishModels/GentleHuntress.glb'
+import crnikModel from '../assets/FishModels/crnik.glb'
+import flatheadModel from '../assets/FishModels/flathead.glb'
+import gentlehuntressModel from '../assets/FishModels/gentlehuntress.glb'
 
 const fish = [
-  { id: 1, name: 'Bloopy', species: 'Coral Drifter', model: glumboModel },
-  { id: 2, name: 'Finzo', species: 'Bubble Swimmer', model: zappyModel },
-  { id: 3, name: 'Splashy', species: 'Reef Glider', model: murkletModel },
+  { id: 1, name: 'Bloopy', species: 'Coral Drifter', model: crnikModel },
+  { id: 2, name: 'Finzo', species: 'Bubble Swimmer', model: flatheadModel },
+  { id: 3, name: 'Splashy', species: 'Reef Glider', model: gentlehuntressModel },
 ]
 
 export default function ReefScreen() {
