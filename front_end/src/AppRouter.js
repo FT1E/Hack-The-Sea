@@ -6,19 +6,19 @@ import RegionScreen from './components/screens/RegionScreen'
 
 export default function AppRouter(props) {
 
-    fish_ops = [
+    const fish_ops = [
         { id: 1, name: 'Conical Sea Squirt(Koničasti Plaščar)', species: 'Aplidium conicum', model: '/FishModels/conicaltunicate.glb', slug: 'conicaltunicate' },
         { id: 2, name: 'Damselfish(Črnik)', species: ' Mediterranean chromis', model: '/FishModels/crnik.glb', slug: 'crnik' },
         { id: 3, name: 'Longstriped blenny(Črnoboka babica)', species: 'Parablennius rouxi', model: '/FishModels/blackeyedgrandmother.glb', slug: 'blackeyedgrandmother' },
     ]
 
-    fish_pmp = [
+    const fish_pmp = [
         { id: 1, name: 'Flat Head (Ploščata Glava)', species: 'Triglidae', model: '/FishModels/flathead.glb', slug: 'flathead' },
         { id: 2, name: 'Common Cuttle Fish(Navadna Sipa)', species: 'Sepia officinalis', model: '/FishModels/commoncuttlefish.glb', slug: 'commoncuttlefish' },
         { id: 3, name: 'Pisanica(pisanica)', species: 'Labridae', model: '/FishModels/pisanica.glb', slug: 'pisanica' },
     ]
 
-    fish_oom = [
+    const fish_oom = [
         {
             id: 1,
             name: 'Striped Croaker(Progasti Gruntar)',
