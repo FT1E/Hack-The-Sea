@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import blackeyedgrandmotherModel from '../assets/FishModels/blackeyedgrandmother.glb'
-import commoncuttlefishModel from '../assets/FishModels/commoncuttlefish.glb'
-import conicaltunicateModel from '../assets/FishModels/conicaltunicate.glb'
+import blackeyedgrandmotherModel from '/FishModels/blackeyedgrandmother.glb'
+import commoncuttlefishModel from '/FishModels/commoncuttlefish.glb'
+import conicaltunicateModel from '/FishModels/conicaltunicate.glb'
 
 const fish = [
   {

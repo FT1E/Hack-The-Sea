@@ -2,9 +2,9 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import modrakModel from '../assets/FishModels/modrak.glb'
-import pisanicaModel from '../assets/FishModels/pisanica.glb'
-import stripedcroakerModel from '../assets/FishModels/stripedcroaker.glb'
+import modrakModel from '/FishModels/modrak.glb'
+import pisanicaModel from '/FishModels/pisanica.glb'
+import stripedcroakerModel from '/FishModels/stripedcroaker.glb'
 
 const fish = [
   { id: 1, name: 'Frostie', species: 'Cold Water Drifter', model: modrakModel },
