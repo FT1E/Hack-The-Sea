@@ -41,6 +41,8 @@ If asked about anything unrelated to this fish, politely redirect the conversati
         },
         contents: history
       })
+      console.log(process.env.REACT_APP_BACKEND)
+
 
       const data = response.data
 
