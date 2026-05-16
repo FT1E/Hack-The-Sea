@@ -4,7 +4,21 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = [
+  "https://front-end-build-yn3o.onrender.com",
+  "http://localhost:3000" // optional for local dev
+];
+
+app.use(cors({
+  origin: function (origin, cb) {
+    // allow non-browser requests (no origin) or allowlisted origins
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 
 const PORT = 4000;
