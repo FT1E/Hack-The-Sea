@@ -47,7 +47,7 @@ export default function FishDetails() {
     setFishData(null);
 
     fetchData();
-  }, [slug]);
+  }, []);
 
   return (
     <>
