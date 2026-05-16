@@ -24,4 +24,14 @@ export const slugMap = {
   stripedcroaker:       "progasti-krulec",
 };
 
+export const DrawMap = ["blackeyedgrandmother",
+  "commoncuttlefish",
+  "conicaltunicate",
+  "crnik",
+  "flathead",
+  "gentlehuntress",
+  "modrak",
+  "pisanica",
+  "stripedcroaker"];
+
 export default modelMap;
