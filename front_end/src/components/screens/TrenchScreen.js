@@ -2,28 +2,28 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import blackeyedgrandmotherModel from '/FishModels/blackeyedgrandmother.glb'
-import commoncuttlefishModel from '/FishModels/commoncuttlefish.glb'
-import conicaltunicateModel from '/FishModels/conicaltunicate.glb'
+//import blackeyedgrandmotherModel from '/FishModels/blackeyedgrandmother.glb'
+//import commoncuttlefishModel from '/FishModels/commoncuttlefish.glb'
+//import conicaltunicateModel from '/FishModels/conicaltunicate.glb'
 
 const fish = [
   {
     id: 1,
     name: 'Glumbo',
     species: 'Deep Sea Floater',
-    model: blackeyedgrandmotherModel,
+    model: '/FishModels/blackeyedgrandmother.glb',
   },
   {
     id: 2,
     name: 'Zappy',
     species: 'Shadow Swimmer',
-    model: commoncuttlefishModel,
+    model: '/FishModels/commoncuttlefish.glb',
   },
   {
     id: 3,
     name: 'Murklet',
     species: 'Cave Glider',
-    model: conicaltunicateModel,
+    model: '/FishModels/conicaltunicate.glb',
   },
 ]
 

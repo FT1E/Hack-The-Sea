@@ -2,14 +2,14 @@ import { useNavigate } from 'react-router-dom'
 import FishCard from '../FishComponents/FishCard'
 import './RegionScreen.css'
 
-import modrakModel from '/FishModels/modrak.glb'
-import pisanicaModel from '/FishModels/pisanica.glb'
-import stripedcroakerModel from '/FishModels/stripedcroaker.glb'
+//import modrakModel from './FishModels/modrak.glb'
+//import pisanicaModel from './FishModels/pisanica.glb'
+//import stripedcroakerModel from './FishModels/stripedcroaker.glb'
 
 const fish = [
-  { id: 1, name: 'Frostie', species: 'Cold Water Drifter', model: modrakModel },
-  { id: 2, name: 'Blubb', species: 'Arctic Glider', model: pisanicaModel },
-  { id: 3, name: 'Chillo', species: 'North Current Rider', model: stripedcroakerModel },
+  { id: 1, name: 'Frostie', species: 'Cold Water Drifter', model: '/FishModels/modrak.glb' },
+  { id: 2, name: 'Blubb', species: 'Arctic Glider', model: '/FishModels/pisanica.glb' },
+  { id: 3, name: 'Chillo', species: 'North Current Rider', model: '/FishModels/stripedcroaker.glb' },
 ]
 
 export default function NorthOceanScreen() {
