@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import server_api from '../services/backend_api'
 
 export default function GeminiChat({ fishData }) {
   const [open, setOpen] = useState(false)
@@ -34,22 +35,14 @@ If asked about anything unrelated to this fish, politely redirect the conversati
         parts: [{ text: m.text }]
       }))
 
-      const response = await fetch('http://localhost:4000/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: {
-            parts: [{ text: systemContext }]
-          },
-          contents: history
-        })
+      const response = await server_api.post('/api/chat', {
+        system_instruction: {
+          parts: [{ text: systemContext }]
+        },
+        contents: history
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Server error')
-      }
+      const data = response.data
 
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text ?? 'No response.'
       setMessages(prev => [...prev, { role: 'model', text: reply }])
