@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams } from "react-router";import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import modelMap from './assets/modelMap';
 
 export default function FishDetails() {
   const { slug } = useParams();
-  const modelPath = "/gold_fish.glb";
+  const modelPath = modelMap[slug] ?? null;
   const mountRef = useRef(null);
   const frameRef = useRef(null);
   const fishRef = useRef(null);
