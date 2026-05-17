@@ -266,12 +266,17 @@ export default function FishDetails() {
             {loading ? (
               <>
                 <div className="skeleton" style={{ height: "3rem", width: "70%", marginBottom: "0.5rem" }} />
+                
+                <div style={{display: "flex", justifyContent : "center", alignItems : "center", flexDirection : "column"}}>
+                  <img src="/loading_spinner_transparent.gif" alt="Loading..." style={{height : "50px", width : "50px"}}/>
+                  <em>Fetching data from back end ...</em>
+                </div>
+                
                 <div className="skeleton" style={{ height: "1rem", width: "50%" }} />
               </>
             ) : fetchError ? (
               <p style={{ color: "rgba(255,100,100,0.7)", fontSize: "0.9rem" }}>
-                Could not load fish data. Is the proxy server running?<br />
-                <code style={{ fontSize: "0.75rem", opacity: 0.6 }}>node server.js</code>
+                {"Error while getting data from back end"}
               </p>
             ) : (
               <>
