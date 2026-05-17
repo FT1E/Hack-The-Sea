@@ -4,6 +4,8 @@ import { Suspense, useCallback, useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import FishLabel from './FishLabel'
 import './FishCard.css'
+import { trackEvent } from '../../services/analytics'
+
 
 function FishModel({ modelPath, onLoaded }) {
   const { scene } = useGLTF(modelPath)
@@ -41,7 +43,9 @@ export default function FishCard({ fish }) {
     }, []);
 
   return (
-    <div className="fish-card" onClick={() => navigate(`/fish/${fish.slug}`)} style={{ cursor: 'pointer' }}>
+          <div className="fish-card" onClick={() => {
+            trackEvent('fish_card_clicked', { fish_name: fish.name, fish_slug: fish.slug })
+            navigate(`/fish/${fish.slug}`)}}>
       <div className="fish-canvas-placeholder">
 
 

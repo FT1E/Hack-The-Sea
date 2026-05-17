@@ -5,6 +5,8 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 import { modelMap, slugMap } from './assets/modelMap';
 import GeminiChat from "./GeminiChat";
 import server_api from '../services/backend_api'
+import { trackEvent } from '../services/analytics'
+
 
 function FishModel({ modelPath, onLoaded }) {
   const { scene } = useGLTF(modelPath);
@@ -30,18 +32,18 @@ export default function FishDetails() {
   useEffect(() => { setModelLoading(true); }, [slug]);
   const handleModelLoaded = useCallback(() => { setModelLoading(false); }, []);
 
-  const fetchData = async () => {
-    try {
-      const response = await server_api.get(`/fish?slug=${remoteSlug}`);
-      setFishData(response.data);
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setFetchError(true);
-      setLoading(false);
+    const fetchData = async () => {
+        try {
+            const response = await server_api.get(`/fish?slug=${remoteSlug}`)
+            setFishData(response.data)
+            setLoading(false)
+            trackEvent('fish_viewed', { fish_name: response.data.commonName, fish_slug: slug }) // ← add this
+        } catch (err) {
+            console.error(err)
+            setFetchError(true)
+            setLoading(false)
+        }
     }
-  }
-
   useEffect(() => {
     setLoading(true);
     setFetchError(false);

@@ -2,53 +2,54 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import OceanRegion from './OceanRegion';
 import sea_water_photo from '../../media/sea_water_photo.jpg';
+import LoginModal from '../LoginModal'
+import { trackEvent } from '../../services/analytics'
 
 export default function OceanHomeScreen (props) {
   const navigate = useNavigate();
   const sea_water_gif = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHF3dzdjdnV4M3A5a2duc3pmdWZlY29za2FrbDN2bXE3d3lvZm9tdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/OalJFGFBD4D2xn61qb/giphy.gif";
 
-  // Handle navigation when a region is clicked
-  const handleRegionClick = (targetRoute) => {
-    navigate(targetRoute);
-  };
+  const handleRegionClick = (targetRoute, regionName) => {
+    trackEvent('region_visited', { region: regionName })
+    navigate(targetRoute)
+  }
 
   return (
     <div style={styles.container}>
-      {/* 1. The Ocean Background Image */}
-      <img 
-        src={sea_water_gif} 
-        alt="Ocean" 
+      <img
+        src={sea_water_gif}
+        alt="Ocean"
         style={styles.image}
       />
 
-      {/* 2. The SVG Overlay for irregular clickable shapes */}
-      {/* viewBox creates a virtual 1000x1000 coordinate system that scales dynamically */}
-      <svg  viewBox="0 0 1000 1000"
-            style={styles.svgOverlay}
-            preserveAspectRatio="xMidYMid slice">
-        
-        {/* Region 1: Top Left / North Ocean */}
-        <OceanRegion 
-          d="M 0,0 L 500,0 Q 400,250 250,500 L 0,500 Z" 
+      <svg
+        viewBox="0 0 1000 1000"
+        style={styles.svgOverlay}
+        preserveAspectRatio="none"
+      >
+        <OceanRegion
+          d="M 0,0 L 500,0 Q 400,250 250,500 L 0,500 Z"
           name="OBALNI PAS SKAL"
-          onClick={() => handleRegionClick('/obalni-pas-skal')}
+          labelX={150} labelY={220}
+          onClick={() => handleRegionClick('/obalni-pas-skal', 'OBALNI PAS SKAL')}
         />
 
-        {/* Region 2: Top Right / Reef Zone */}
-        <OceanRegion 
-          d="M 500,0 L 1000,0 L 1000,600 C 800,500 700,300 500,0 Z" 
+        <OceanRegion
+          d="M 500,0 L 1000,0 L 1000,600 C 800,500 700,300 500,0 Z"
           name="PEŠČENO MORSKI PAS"
-          onClick={() => handleRegionClick('/pesceno-morski-pas')}
+          labelX={780} labelY={220}
+          onClick={() => handleRegionClick('/pesceno-morski-pas', 'PEŠČENO MORSKI PAS')}
         />
 
-        {/* Region 3: Deep Trench (Southern Area) */}
-        <OceanRegion 
-          d="M 0,500 L 250,500 Q 400,250 500,0 C 700,300 800,500 1000,600 L 1000,1000 L 0,1000 Z" 
+        <OceanRegion
+          d="M 0,500 L 250,500 Q 400,250 500,0 C 700,300 800,500 1000,600 L 1000,1000 L 0,1000 Z"
           name="ODPRTO OBALNO MORJE"
-          onClick={() => handleRegionClick('/odprto-obalno-morje')}
+          labelX={500} labelY={780}
+          onClick={() => handleRegionClick('/odprto-obalno-morje', 'ODPRTO OBALNO MORJE')}
         />
-
       </svg>
+
+      <LoginModal />
     </div>
   );
 };
@@ -73,6 +74,6 @@ const styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    pointerEvents: 'none', // Allows clicking through empty SVG space if needed
+    pointerEvents: 'none',
   },
 };
