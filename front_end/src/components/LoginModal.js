@@ -6,10 +6,7 @@ export default function LoginModal() {
     const [profile, setProfile] = useState(null)
     const [form, setForm] = useState({ age_range: '', gender: '', occupation: '' })
 
-    useEffect(() => {
-        const saved = localStorage.getItem('userProfile')
-        if (saved) setProfile(JSON.parse(saved))
-    }, [])
+
 
     const handleSubmit = () => {
         localStorage.setItem('userProfile', JSON.stringify(form))
@@ -22,7 +19,7 @@ export default function LoginModal() {
 
     return (
         <>
-            {/* Login button */}
+            {/* Login button — more visible */}
             <button
                 onClick={() => setShowModal(true)}
                 style={{
@@ -30,15 +27,17 @@ export default function LoginModal() {
                     top: '1.5rem',
                     right: '1.5rem',
                     zIndex: 50,
-                    padding: '0.5rem 1.2rem',
+                    padding: '0.6rem 1.4rem',
                     borderRadius: '50px',
-                    border: '1px solid rgba(0,229,255,0.3)',
-                    background: profile ? 'rgba(0,229,255,0.15)' : 'rgba(255,255,255,0.05)',
-                    color: profile ? '#00e5ff' : 'rgba(232,244,253,0.5)',
+                    border: '1.5px solid rgba(0,229,255,0.7)',
+                    background: profile ? 'rgba(0,229,255,0.25)' : 'rgba(0,229,255,0.12)',
+                    color: '#00e5ff',
                     fontFamily: 'Nunito, sans-serif',
-                    fontSize: '0.8rem',
+                    fontSize: '0.9rem',
+                    fontWeight: 700,
                     cursor: 'pointer',
                     backdropFilter: 'blur(8px)',
+                    boxShadow: '0 0 16px rgba(0,229,255,0.3)',
                     transition: 'all 0.2s',
                 }}
             >
@@ -64,10 +63,34 @@ export default function LoginModal() {
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '1.2rem',
-                        boxShadow: '0 0 60px rgba(0,229,255,0.1)'
+                        boxShadow: '0 0 60px rgba(0,229,255,0.1)',
+                        position: 'relative',
                     }}>
+                        {/* Back button */}
+                        <button
+                            onClick={() => setShowModal(false)}
+                            style={{
+                                position: 'absolute',
+                                top: '1.2rem',
+                                left: '1.2rem',
+                                background: 'none',
+                                border: '1px solid rgba(0,229,255,0.2)',
+                                borderRadius: '50px',
+                                color: 'rgba(0,229,255,0.6)',
+                                fontFamily: 'Nunito, sans-serif',
+                                fontSize: '0.8rem',
+                                cursor: 'pointer',
+                                padding: '0.3rem 0.8rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.3rem',
+                            }}
+                        >
+                            ← Back
+                        </button>
+
                         {/* Title */}
-                        <div style={{ textAlign: 'center' }}>
+                        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                             <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>🌊</div>
                             <h2 style={{
                                 fontFamily: 'Baloo 2, cursive',
