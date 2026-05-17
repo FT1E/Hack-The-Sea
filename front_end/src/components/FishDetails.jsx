@@ -1,5 +1,5 @@
 import { Suspense, useState, useEffect, useCallback } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { modelMap, slugMap } from './assets/modelMap';
@@ -13,6 +13,7 @@ function FishModel({ modelPath, onLoaded }) {
   useEffect(() => {
     if (scene) onLoaded();
   }, [scene, onLoaded]);
+
 
   return (
     <primitive object={scene} scale={1} position={[0, 0, 0]} rotation={[0, Math.PI / 4, 0]} />
@@ -28,6 +29,9 @@ export default function FishDetails() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("info");
   const [modelLoading, setModelLoading] = useState(true);
+  
+  
+  const navigate = useNavigate();
 
   useEffect(() => { setModelLoading(true); }, [slug]);
   const handleModelLoaded = useCallback(() => { setModelLoading(false); }, []);
@@ -371,6 +375,11 @@ export default function FishDetails() {
         <header className="header">
           <span className="header-tag">🌊 Aquarium</span>
           <span className="header-title">Species Detail</span>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: "0.5rem", padding: "1rem 0" }}>  
+            <button className="nav-btn" onClick={() => navigate(-1)}>
+              {'Back to previous page'}
+            </button>
+        </div>
         </header>
 
         {/* 3D Viewport */}
