@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { modelMap, slugMap } from './assets/modelMap';
+import GeminiChat from "./GeminiChat";
 
 import server_api from '../services/backend_api'
 
@@ -47,7 +48,7 @@ export default function FishDetails() {
     setFishData(null);
 
     fetchData();
-  }, [slug]);
+  }, []);
 
   return (
     <>
@@ -370,6 +371,9 @@ export default function FishDetails() {
           )}
 
         </aside>
+          {!loading && !fetchError && fishData && (
+          <GeminiChat fishData={fishData} />
+        )}
       </div>
     </>
   );

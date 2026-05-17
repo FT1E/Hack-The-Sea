@@ -1,11 +1,12 @@
 import { BrowserRouter, Route, Routes } from 'react-router'
 import OceanHomeScreen from './components/OceanScreen/OceanHomeScreen'
 import FishDetails from './components/FishDetails'
-
+import GameScreen from './components/screens/GameScreen'
 import RegionScreen from './components/screens/RegionScreen'
 import DrawingScreen from './components/drawing/Drawingscreen'
 
 export default function AppRouter(props) {
+
 
     const fish_ops = [
         { id: 1, name: 'Conical Sea Squirt(Koničasti Plaščar)', species: 'Aplidium conicum', model: '/FishModels/conicaltunicate.glb', slug: 'conicaltunicate' },
@@ -69,6 +70,7 @@ export default function AppRouter(props) {
                     />
                 } />
                 <Route path='/fish/:slug' element={<FishDetails />} />
+                <Route path='/game' element={<GameScreen />} />
                 <Route path='/draw' element={<DrawingScreen />} />
             </Routes>
         </BrowserRouter>

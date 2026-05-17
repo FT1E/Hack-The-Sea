@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+require("dotenv").config();
 
 const app = express();
 
@@ -22,6 +24,9 @@ app.use(cors({
 app.use(express.json());
 
 const PORT = 4000;
+
+// Initialize Gemini
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Translate using MyMemory — splits long text into chunks under 500 chars
 async function translate(text) {
@@ -60,6 +65,32 @@ async function translate(text) {
 
   return translated.join(" ");
 }
+
+
+// Gemini Chat Proxy
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { system_instruction, contents } = req.body;
+
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ error: "Gemini API key not configured" });
+    }
+
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+      { system_instruction, contents },
+      { headers: { "Content-Type": "application/json" }, timeout: 30000 }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    const status = error.response?.status || 500;
+    const message = error.response?.data?.error?.message || error.message;
+    console.error("Gemini proxy error:", message);
+    res.status(status).json({ error: message });
+  }
+});
+
 
 // GET /fish?slug=pisanica
 app.get("/fish", async (req, res) => {
@@ -127,7 +158,7 @@ app.get("/fish", async (req, res) => {
       }
     });
 
-    // Translate fields (commonName stays Slovenian, englishName comes from page)
+    // Translate fields
     const [description, behaviour, size, habitat, funFactEn] = await Promise.all([
       translate(fields["Opis"] || ""),
       translate(fields["Posebnosti"] || ""),
@@ -138,7 +169,7 @@ app.get("/fish", async (req, res) => {
 
     res.json({
       slug,
-      commonName: englishName || commonNameSl, // use English name from page if available
+      commonName: englishName || commonNameSl,
       commonNameSl,
       scientificName,
       description,
@@ -157,4 +188,5 @@ app.get("/fish", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Fish proxy server running on http://localhost:${PORT}`);
   console.log(`Test it: http://localhost:${PORT}/fish?slug=pisanica`);
+  console.log(`Chat endpoint: http://localhost:${PORT}/api/chat`);
 });
