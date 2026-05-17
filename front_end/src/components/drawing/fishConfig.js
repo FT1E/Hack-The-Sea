@@ -100,4 +100,4 @@ export const FISH_CONFIG = {
 // ============================================================
 
 export const TEACHABLE_MACHINE_URL =
-  "https://teachablemachine.withgoogle.com/models/YOUR_MODEL_ID/";
+  "https://teachablemachine.withgoogle.com/models/fkLtWAaPu/"; 
