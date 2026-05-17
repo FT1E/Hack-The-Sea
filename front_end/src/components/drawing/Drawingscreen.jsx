@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate } from 'react-router-dom'
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as tmImage from "@teachablemachine/image";                // ✅ FIX 1: static import
@@ -53,6 +54,8 @@ export default function DrawingScreen() {
     || Object.keys(FISH_CONFIG)[0];
 
   const fish = FISH_CONFIG[fishId] || Object.values(FISH_CONFIG)[0];
+
+  const navigate = useNavigate();
 
   const drawCanvasRef = useRef(null);
   const isDrawingRef  = useRef(false);
@@ -209,6 +212,11 @@ export default function DrawingScreen() {
       </div>
 
       <header className="ds-header">
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: "0.5rem", padding: "1rem 0" }}>  
+          <button className="nav-btn" onClick={() => navigate(-1)}>
+            <span className="ds-header-text"> {'Back to previous page'} </span>
+          </button>
+        </div>
         <div className="ds-header-text">
           <p className="ds-header-sub">Draw the</p>
           <h1 className="ds-header-title">{fish.label}</h1>

@@ -29,7 +29,7 @@ export default function RegionScreen({ title, fish, nextRoute }) {
 
         {
           <button className="nav-btn" onClick={() => navigate('/')}>
-            ← {'Back to map'}
+            {'Back to map'}
           </button>
         }
         {nextRoute && (
