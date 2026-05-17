@@ -3,23 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | My project</title>
+    <title>Unity Web Player | GameScreen</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
-  <script>
-window.addEventListener("message", (event) => {
-
-  if (event.data.type === "UNLOCK_FISH") {
-
-    unityInstance.SendMessage(
-      "FishManager",
-      "UnlockFish",
-      event.data.fishId
-    );
-  }
-});
-</script>
   <body>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
@@ -33,7 +20,7 @@ window.addEventListener("message", (event) => {
       <div id="unity-footer">
         <div id="unity-logo-title-footer"></div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">My project</div>
+        <div id="unity-build-title">GameScreen</div>
       </div>
     </div>
     <script>
@@ -65,15 +52,15 @@ window.addEventListener("message", (event) => {
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/unity-build.loader.js";
+      var loaderUrl = buildUrl + "/Hack-the-sea.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/unity-build.data",
-        frameworkUrl: buildUrl + "/unity-build.framework.js",
-        codeUrl: buildUrl + "/unity-build.wasm",
+        dataUrl: buildUrl + "/Hack-the-sea.data",
+        frameworkUrl: buildUrl + "/Hack-the-sea.framework.js",
+        codeUrl: buildUrl + "/Hack-the-sea.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
-        productName: "My project",
+        productName: "GameScreen",
         productVersion: "0.1.0",
         showBanner: unityShowBanner,
         // errorHandler: function(err, url, line) {
