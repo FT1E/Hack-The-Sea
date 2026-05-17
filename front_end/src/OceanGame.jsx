@@ -8,7 +8,6 @@ const FISH = [
     emoji: "🐟",
     color: "#1a8fcb",
     sos: "The sea is changing. I keep getting lost.",
-    pos: { top: "78%", left: "72%" },
     questions: [
       {
         q: "What causes ocean acidification?",
@@ -52,7 +51,6 @@ const FISH = [
     emoji: "🐠",
     color: "#2aaa7a",
     sos: "The rocks where I lay my eggs are disappearing.",
-    pos: { top: "58%", left: "32%" },
     questions: [
       {
         q: "What does the black spot on Črnko's tail do?",
@@ -96,7 +94,6 @@ const FISH = [
     emoji: "🐡",
     color: "#a04060",
     sos: "I've lived here 18 years. The sea is warmer every summer.",
-    pos: { top: "60%", left: "14%" },
     questions: [
       {
         q: "How does climate change affect where fish live?",
@@ -140,7 +137,6 @@ const FISH = [
     emoji: "🦈",
     color: "#2c5f7a",
     sos: "I am the sea wolf. Wild ones like me are almost gone.",
-    pos: { top: "43%", left: "70%" },
     questions: [
       {
         q: "What does 'sustainable fishing' mean?",
@@ -211,18 +207,9 @@ export default function OceanGame() {
   const allSolved = solved.length === FISH.length;
 
   return (
-    // ── Outer wrapper fills the whole page ──────────────────────────
     <div style={s.page}>
-
-      {/*
-        ── KEY FIX: this inner container is position:relative
-           The iframe AND the labels are both children of this div.
-           So label percentages are always relative to the iframe area,
-           not the whole browser window — works in both normal & fullscreen.
-      */}
       <div style={s.gameContainer}>
 
-        {/* Unity iframe */}
         <iframe
           id="unity-frame"
           src="/unity-build/index.html"
@@ -231,48 +218,54 @@ export default function OceanGame() {
           allow="fullscreen"
         />
 
-        {/* Floating fish labels — positioned inside gameContainer */}
-        {FISH.map((fish) => {
-          const isSolved = solved.includes(fish.id);
-          return (
-            <button
-              key={fish.id}
-              style={{
-                ...s.label,
-                top: fish.pos.top,
-                left: fish.pos.left,
-                borderColor: fish.color,
-                background: isSolved
-                  ? "rgba(30,180,100,0.85)"
-                  : "rgba(0,20,40,0.75)",
-                cursor: isSolved ? "default" : "pointer",
-                animation: isSolved ? "none" : "pulse 2s infinite",
-              }}
-              onClick={() => openQuiz(fish)}
-            >
-              <span style={{ fontSize: 16 }}>{fish.emoji}</span>
-              <span style={s.labelName}>{fish.name}</span>
-              {isSolved
-                ? <span style={s.solvedTick}>✓</span>
-                : <span style={{ ...s.sosBadge, background: fish.color }}>SOS</span>
-              }
-            </button>
-          );
-        })}
+        {/* Fish labels — stacked vertically in top-left */}
+        <div style={s.labelStack}>
+          {FISH.map((fish) => {
+            const isSolved = solved.includes(fish.id);
+            return (
+              <button
+                key={fish.id}
+                style={{
+                  ...s.label,
+                  cursor: isSolved ? "default" : "pointer",
+                  background: isSolved
+                    ? "rgba(30,180,100,0.22)"
+                    : "rgba(8,20,40,0.55)",
+                  borderColor: isSolved
+                    ? "rgba(80,220,140,0.45)"
+                    : "rgba(255,255,255,0.16)",
+                  opacity: isSolved ? 0.65 : 1,
+                }}
+                onClick={() => openQuiz(fish)}
+              >
+                <span style={{
+                  width: 7, height: 7, borderRadius: "50%", flexShrink: 0,
+                  background: isSolved ? "#4ade80" : fish.color,
+                  boxShadow: isSolved ? "none" : `0 0 5px ${fish.color}`,
+                  animation: isSolved ? "none" : "pulseDot 2s ease-in-out infinite",
+                }} />
+                <span style={s.labelEmoji}>{fish.emoji}</span>
+                <span style={s.labelName}>{fish.name}</span>
+                {isSolved
+                  ? <span style={s.solvedTick}>✓</span>
+                  : <span style={{ ...s.sosBadge, color: fish.color }}>SOS</span>
+                }
+              </button>
+            );
+          })}
+        </div>
 
-        {/* Progress counter — inside gameContainer so it stays on the scene */}
+        {/* Progress counter — top right */}
         <div style={s.counter}>
           {solved.length} / {FISH.length} helped
         </div>
 
-        {/* All solved banner */}
         {allSolved && (
           <div style={s.allSolvedBanner}>
             🌊 You saved all creatures! The Adriatic thanks you.
           </div>
         )}
 
-        {/* Quiz overlay — also inside gameContainer */}
         {activeFish && currentQ && (
           <div style={s.overlay}>
             <div style={{ ...s.modal, borderTop: `4px solid ${activeFish.color}` }}>
@@ -337,9 +330,9 @@ export default function OceanGame() {
       </div>
 
       <style>{`
-        @keyframes pulse {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.4); }
-          50% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+        @keyframes pulseDot {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.6); }
         }
       `}</style>
     </div>
@@ -347,7 +340,6 @@ export default function OceanGame() {
 }
 
 const s = {
-  // Fills the whole viewport
   page: {
     width: "100vw",
     height: "100vh",
@@ -355,7 +347,6 @@ const s = {
     background: "#000",
     fontFamily: "'Segoe UI', system-ui, sans-serif",
   },
-  // This is the key: position relative so children use THIS as their offset parent
   gameContainer: {
     position: "relative",
     width: "100%",
@@ -363,42 +354,56 @@ const s = {
   },
   iframe: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
+    top: 0, left: 0,
+    width: "100%", height: "100%",
     border: "none",
   },
-  label: {
-    position: "absolute",      // relative to gameContainer, not the page
+  labelStack: {
+    position: "absolute",
+    top: 16,
+    left: 16,
     display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    zIndex: 10,
+  },
+  label: {
+    display: "inline-flex",
     alignItems: "center",
-    gap: 6,
-    padding: "7px 12px",
+    alignSelf: "flex-start",
+    gap: 7,
+    padding: "7px 13px 7px 9px",
     borderRadius: 99,
-    border: "1.5px solid",
+    border: "1px solid",
     color: "#fff",
     fontSize: 13,
     fontWeight: 600,
-    backdropFilter: "blur(6px)",
-    transition: "transform 0.15s, background 0.3s",
-    transform: "translate(-50%, -50%)",
+    letterSpacing: "0.01em",
+    backdropFilter: "blur(14px)",
+    WebkitBackdropFilter: "blur(14px)",
+    transition: "background 0.2s, opacity 0.3s",
     whiteSpace: "nowrap",
-    zIndex: 10,
+    boxShadow: "0 2px 12px rgba(0,0,0,0.25)",
   },
+  labelEmoji: { fontSize: 15, lineHeight: 1 },
   labelName: { fontSize: 13 },
   sosBadge: {
-    fontSize: 10, fontWeight: 700,
-    padding: "2px 6px", borderRadius: 99,
-    color: "#fff", letterSpacing: "0.05em",
+    fontSize: 10,
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    opacity: 0.9,
   },
-  solvedTick: { fontSize: 14, color: "#fff" },
+  solvedTick: { fontSize: 12, color: "#4ade80" },
   counter: {
     position: "absolute", top: 16, right: 16,
-    background: "rgba(0,20,40,0.75)", color: "#fff",
-    padding: "6px 14px", borderRadius: 99,
+    background: "rgba(8,20,40,0.6)",
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+    color: "#fff",
+    padding: "6px 16px", borderRadius: 99,
     fontSize: 13, fontWeight: 600,
-    backdropFilter: "blur(6px)", zIndex: 10,
+    border: "1px solid rgba(255,255,255,0.15)",
+    zIndex: 10,
   },
   allSolvedBanner: {
     position: "absolute", bottom: 32, left: "50%",
