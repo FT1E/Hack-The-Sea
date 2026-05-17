@@ -1,37 +1,25 @@
-// ============================================================
-// DrawingScreen.jsx
-// Drop this in: src/pages/DrawingScreen.jsx
-//
-// Dependencies to install:
-//   npm install @react-three/fiber @react-three/drei @tensorflow/tfjs @teachablemachine/image
-//
-// Then add a route in your App.jsx / router:
-//   <Route path="/draw/:fishId" element={<DrawingScreen />} />
-// ============================================================
-
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
+import * as tmImage from "@teachablemachine/image";                // ✅ FIX 1: static import
 import { FISH_CONFIG, TEACHABLE_MACHINE_URL } from "./fishConfig";
 import "./DrawingScreen.css";
 import { Box3, Vector3 } from "three";
 
-// ─── Constants ────────────────────────────────────────────────
 const BRUSH_COLORS = ["#1a1a2e", "#e63946", "#f4a261", "#2a9d8f", "#457b9d", "#6d4c41", "#ffffff"];
 const BRUSH_SIZES  = [4, 8, 14, 22];
 const PEEK_OPACITY_IDLE   = 0.12;
 const PEEK_OPACITY_ACTIVE = 0.50;
 
-// ─── Fish 3D model sub-component ─────────────────────────────
-// Isolated so useGLTF and useFrame live inside the Canvas context.
+// ✅ FIX 2: fallback path so useGLTF never receives null
+const FALLBACK_MODEL = Object.values(FISH_CONFIG)[0]?.model || "";
+
 function FishModel({ modelPath }) {
   const groupRef = useRef();
-  const { scene } = useGLTF(modelPath);
+  const { scene } = useGLTF(modelPath || FALLBACK_MODEL);          // ✅ never null
 
   useEffect(() => {
     if (!scene) return;
-
-    // Now uses the top-level imports instead of require()
     const box    = new Box3().setFromObject(scene);
     const centre = box.getCenter(new Vector3());
     const size   = box.getSize(new Vector3());
@@ -39,7 +27,6 @@ function FishModel({ modelPath }) {
     const scale  = 1.8 / maxDim;
     scene.scale.setScalar(scale);
     scene.position.sub(centre.multiplyScalar(scale));
-
     scene.traverse((child) => {
       if (child.isMesh) {
         child.material = child.material.clone();
@@ -60,25 +47,20 @@ function FishModel({ modelPath }) {
   );
 }
 
-// ─── Component ────────────────────────────────────────────────
 export default function DrawingScreen() {
   const fishId = new URLSearchParams(window.location.search).get("fish")
     || window.location.pathname.split("/").pop()
-    || "Fish1";
+    || Object.keys(FISH_CONFIG)[0];
 
   const fish = FISH_CONFIG[fishId] || Object.values(FISH_CONFIG)[0];
 
-  // ── Canvas refs ────────────────────────────────────────────
   const drawCanvasRef = useRef(null);
-
-  // ── Drawing state ─────────────────────────────────────────
   const isDrawingRef  = useRef(false);
   const lastPointRef  = useRef(null);
-  const [brushColor, setBrushColor] = useState("#1a1a2e");
-  const [brushSize,  setBrushSize]  = useState(8);
-  const [isEraser,   setIsEraser]   = useState(false);
 
-  // ── Peek / AI state ───────────────────────────────────────
+  const [brushColor,    setBrushColor]    = useState("#1a1a2e");
+  const [brushSize,     setBrushSize]     = useState(8);
+  const [isEraser,      setIsEraser]      = useState(false);
   const [isPeeking,     setIsPeeking]     = useState(false);
   const [tmModel,       setTmModel]       = useState(null);
   const [modelLoading,  setModelLoading]  = useState(false);
@@ -86,16 +68,12 @@ export default function DrawingScreen() {
   const [result,        setResult]        = useState(null);
   const [showResult,    setShowResult]    = useState(false);
 
-  // ── Canvas size ───────────────────────────────────────────
   const CANVAS_SIZE = Math.min(
     typeof window !== "undefined" ? Math.floor(window.innerWidth  * 0.82) : 500,
     typeof window !== "undefined" ? Math.floor(window.innerHeight * 0.60) : 500,
     520
   );
 
-  // ──────────────────────────────────────────────────────────
-  // 1. Initialise drawing canvas (white background for AI)
-  // ──────────────────────────────────────────────────────────
   useEffect(() => {
     const canvas = drawCanvasRef.current;
     if (!canvas) return;
@@ -104,7 +82,6 @@ export default function DrawingScreen() {
     ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
   }, [CANVAS_SIZE]);
 
-  // ── Drawing helpers ────────────────────────────────────────
   const getPos = (e, canvas) => {
     const rect   = canvas.getBoundingClientRect();
     const scaleX = canvas.width  / rect.width;
@@ -161,15 +138,12 @@ export default function DrawingScreen() {
     setShowResult(false);
   }, []);
 
-  // ──────────────────────────────────────────────────────────
-  // 2. Teachable Machine — lazy load
-  // ──────────────────────────────────────────────────────────
+  // ✅ FIX 1 continued: tmImage is now a static import, call .load directly
   const loadTMModel = useCallback(async () => {
     if (tmModel || modelLoading) return tmModel;
     setModelLoading(true);
     try {
-      const tmImage  = await import("@teachablemachine/image");
-      const loaded   = await tmImage.load(
+      const loaded = await tmImage.load(
         TEACHABLE_MACHINE_URL + "model.json",
         TEACHABLE_MACHINE_URL + "metadata.json"
       );
@@ -178,20 +152,17 @@ export default function DrawingScreen() {
       return loaded;
     } catch (err) {
       console.error("Teachable Machine load error:", err);
+      alert("Could not load the AI model. Error: " + err.message);
       setModelLoading(false);
       return null;
     }
   }, [tmModel, modelLoading]);
 
-  // ──────────────────────────────────────────────────────────
-  // 3. Identify the drawing
-  // ──────────────────────────────────────────────────────────
   const identify = useCallback(async () => {
     setIsIdentifying(true);
     setShowResult(false);
     const model = tmModel || await loadTMModel();
     if (!model) {
-      alert("Could not load the AI model. Check your Teachable Machine URL in fishConfig.js.");
       setIsIdentifying(false);
       return;
     }
@@ -206,8 +177,19 @@ export default function DrawingScreen() {
           fishId:     p.className,
           confidence: Math.round(p.probability * 100),
         })),
+      
+      });
+      console.log({
+        fishId:     top.className,
+        confidence: Math.round(top.probability * 100),
+        allGuesses: sorted.slice(0, 3).map((p) => ({
+          fishId:     p.className,
+          confidence: Math.round(p.probability * 100),
+        })),
+      
       });
       setShowResult(true);
+
     } catch (err) {
       console.error("Prediction error:", err);
       alert("Something went wrong with the identification. Try again!");
@@ -215,23 +197,17 @@ export default function DrawingScreen() {
     setIsIdentifying(false);
   }, [tmModel, loadTMModel]);
 
-  // ── Peek handlers ─────────────────────────────────────────
   const onPeekStart = (e) => { e.preventDefault(); setIsPeeking(true);  };
   const onPeekEnd   = (e) => { e.preventDefault(); setIsPeeking(false); };
 
   const resultFish = result ? (FISH_CONFIG[result.fishId] || fish) : null;
 
-  // ──────────────────────────────────────────────────────────
-  // Render
-  // ──────────────────────────────────────────────────────────
   return (
     <div className="ds-root">
-      {/* Animated bubbles background */}
       <div className="ds-bubbles" aria-hidden="true">
         {[...Array(12)].map((_, i) => <span key={i} className="ds-bubble" />)}
       </div>
 
-      {/* Header */}
       <header className="ds-header">
         <div className="ds-header-text">
           <p className="ds-header-sub">Draw the</p>
@@ -239,10 +215,9 @@ export default function DrawingScreen() {
         </div>
       </header>
 
-      {/* ── Canvas row — 3-D model panel + drawing panel side by side ── */}
       <div className="ds-canvas-wrapper">
 
-        {/* Panel 1 — R3F ghost model */}
+        {/* Panel 1 — ghost model */}
         <div
           className="ds-three-panel"
           style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
@@ -254,21 +229,24 @@ export default function DrawingScreen() {
               transition: isPeeking ? "opacity 0.15s ease-out" : "opacity 0.35s ease-in",
             }}
           >
-            <Canvas
-              camera={{ position: [0, 0, 3], fov: 45 }}
-              gl={{ alpha: true, antialias: true }}
-              style={{ background: "transparent" }}
-            >
-              <ambientLight intensity={0.6} />
-              <directionalLight position={[2, 2, 3]} intensity={1.2} />
-              <FishModel modelPath={fish.model} />
-              <OrbitControls enabled={false} />
-            </Canvas>
+            {/* ✅ FIX 2: only mount Canvas when model path is valid */}
+            {fish?.model && (
+              <Canvas
+                camera={{ position: [0, 0, 3], fov: 45 }}
+                gl={{ alpha: true, antialias: true }}
+                style={{ background: "transparent" }}
+              >
+                <ambientLight intensity={0.6} />
+                <directionalLight position={[2, 2, 3]} intensity={1.2} />
+                <FishModel modelPath={fish.model} />
+                <OrbitControls enabled={false} />
+              </Canvas>
+            )}
           </div>
           <div className="ds-canvas-border" />
         </div>
 
-        {/* Panel 2 — Drawing canvas */}
+        {/* Panel 2 — drawing canvas */}
         <div
           className="ds-draw-panel"
           style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
@@ -291,7 +269,6 @@ export default function DrawingScreen() {
 
       </div>
 
-      {/* Toolbar */}
       <div className="ds-toolbar">
         <div className="ds-tool-group">
           <span className="ds-tool-label">Color</span>
@@ -337,7 +314,6 @@ export default function DrawingScreen() {
         </div>
       </div>
 
-      {/* Peek button */}
       <button
         className={`ds-peek-btn ${isPeeking ? "peeking" : ""}`}
         onPointerDown={onPeekStart}
@@ -350,7 +326,6 @@ export default function DrawingScreen() {
         <span>{isPeeking ? "Seeing the fish…" : "Hold to peek!"}</span>
       </button>
 
-      {/* Identify button */}
       <button
         className={`ds-identify-btn ${isIdentifying ? "loading" : ""}`}
         onClick={identify}
@@ -359,7 +334,6 @@ export default function DrawingScreen() {
         {isIdentifying ? "🔍 Thinking…" : modelLoading ? "⏳ Loading AI…" : "✨ What fish is this?"}
       </button>
 
-      {/* Result overlay */}
       {showResult && resultFish && (
         <div className="ds-result-overlay" onClick={() => setShowResult(false)}>
           <div
