@@ -4,227 +4,349 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import { modelMap, slugMap } from './assets/modelMap';
 import GeminiChat from "./GeminiChat";
-
 import server_api from '../services/backend_api'
 
 function FishModel({ modelPath, onLoaded }) {
   const { scene } = useGLTF(modelPath);
-
   useEffect(() => {
-    if (scene) {
-      onLoaded(); // Signal that model is ready
-    }
+    if (scene) onLoaded();
   }, [scene, onLoaded]);
 
   return (
-    <primitive
-      object={scene}
-      scale={1}
-      position={[0, 0, 0]}
-      rotation={[0, Math.PI / 4, 0]}
-    />
+    <primitive object={scene} scale={1} position={[0, 0, 0]} rotation={[0, Math.PI / 4, 0]} />
   );
 }
 
 export default function FishDetails() {
   const { slug } = useParams();
-  //const modelPath = `/FishModels/${slug}.glb`;
   const modelPath = modelMap[slug] ?? null;
   const remoteSlug = slugMap[slug] ?? slug;
   const [fishData, setFishData] = useState(null);
   const [fetchError, setFetchError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("info");
+  const [modelLoading, setModelLoading] = useState(true);
 
-  const [modelLoading, setModelLoading] = useState(true); // <-- NEW
+  useEffect(() => { setModelLoading(true); }, [slug]);
+  const handleModelLoaded = useCallback(() => { setModelLoading(false); }, []);
 
-  // Reset model loading when slug changes
-  useEffect(() => {
-    setModelLoading(true);
-  }, [slug]);
-
-  const handleModelLoaded = useCallback(() => {
-    setModelLoading(false);
-  }, []);
-
-  const fetchData = async () =>
-  {
-      try {
-        const response = await server_api.get(`/fish?slug=${remoteSlug}`);
-        setFishData(response.data);
-        setLoading(false);
-      } catch (err) {
-        console.error(err);
-        setFetchError(true);
-        setLoading(false);
-      }
+  const fetchData = async () => {
+    try {
+      const response = await server_api.get(`/fish?slug=${remoteSlug}`);
+      setFishData(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setFetchError(true);
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
     setLoading(true);
     setFetchError(false);
     setFishData(null);
-
     fetchData();
   }, []);
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Nunito:wght@400;600;700&display=swap');
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #05111f; font-family: 'DM Sans', sans-serif; color: #e8dfc8; min-height: 100vh; }
+
+        body {
+          background: #040d21;
+          font-family: 'Nunito', sans-serif;
+          color: #e8f4fd;
+          min-height: 100vh;
+        }
 
         .page {
           min-height: 100vh;
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-template-rows: auto 1fr;
-          background: linear-gradient(135deg, #05111f 0%, #0a1e35 50%, #071525 100%);
+          background: radial-gradient(ellipse at 30% 20%, #0a2a6e 0%, #040d21 60%);
           position: relative;
           overflow: hidden;
         }
-        .page::before {
-          content: '';
-          position: fixed; inset: 0;
-          background:
-            radial-gradient(ellipse 80% 50% at 20% 80%, rgba(255,165,40,0.06) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 80% 20%, rgba(20,100,180,0.08) 0%, transparent 60%);
-          pointer-events: none; z-index: 0;
-        }
 
+        /* Bubbles */
         .bubbles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
         .bubble {
-          position: absolute; border-radius: 50%;
-          border: 1px solid rgba(255,200,100,0.15);
-          animation: rise linear infinite;
+          position: absolute;
+          bottom: -60px;
+          border-radius: 50%;
+          background: radial-gradient(circle at 35% 35%, rgba(0,229,255,0.35), rgba(0,229,255,0.04));
+          border: 1px solid rgba(0,229,255,0.2);
+          animation: bubble-rise linear infinite;
         }
-        @keyframes rise {
-          from { transform: translateY(110vh) scale(0.8); opacity: 0.6; }
-          to   { transform: translateY(-10vh) scale(1.1); opacity: 0; }
+        @keyframes bubble-rise {
+          0%   { transform: translateY(0) translateX(0); opacity: 0; }
+          10%  { opacity: 0.8; }
+          90%  { opacity: 0.5; }
+          100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
         }
 
+        /* Header */
         .header {
           grid-column: 1 / -1;
-          padding: 2rem 3rem 0;
-          display: flex; align-items: baseline; gap: 1.2rem;
-          position: relative; z-index: 2;
+          padding: 1.5rem 2.5rem;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          position: relative;
+          z-index: 2;
+          background: rgba(255,255,255,0.04);
+          border-bottom: 1px solid rgba(0,229,255,0.1);
+          backdrop-filter: blur(10px);
         }
         .header-tag {
-          font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
-          color: rgba(255,180,60,0.6); border: 1px solid rgba(255,180,60,0.2);
-          padding: 0.3em 0.8em; border-radius: 2px;
+          font-size: 0.65rem;
+          letter-spacing: 0.25em;
+          text-transform: uppercase;
+          color: rgba(0,229,255,0.6);
+          border: 1px solid rgba(0,229,255,0.2);
+          padding: 0.3em 0.8em;
+          border-radius: 50px;
+          font-family: 'Nunito', sans-serif;
         }
         .header-title {
-          font-family: 'Playfair Display', serif; font-size: 0.95rem;
-          color: rgba(232,223,200,0.4); font-weight: 400;
+          font-family: 'Baloo 2', cursive;
+          font-size: 1rem;
+          color: rgba(232,244,253,0.4);
+          font-weight: 400;
         }
 
+        /* Viewport */
         .viewport {
-          grid-column: 1; grid-row: 2;
-          position: relative; z-index: 1; min-height: 520px;
-          display: flex; align-items: center; justify-content: center;
+          grid-column: 1;
+          grid-row: 2;
+          position: relative;
+          z-index: 1;
+          min-height: 520px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
-        .canvas-wrap { width: 100%; height: 520px; position: relative; }
-
+        .canvas-wrap {
+          width: 100%;
+          height: 520px;
+          position: relative;
+          border-right: 1px solid rgba(0,229,255,0.08);
+        }
+        .canvas-wrap::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          box-shadow: inset 0 0 60px rgba(0,229,255,0.04);
+        }
         .viewport-badge {
-          position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
-          font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-          color: rgba(255,180,60,0.4);
-          display: flex; align-items: center; gap: 0.5rem; z-index: 3;
+          position: absolute;
+          bottom: 1.5rem;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 0.6rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(0,229,255,0.35);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          z-index: 3;
+          font-family: 'Nunito', sans-serif;
         }
         .viewport-badge::before, .viewport-badge::after {
-          content: ''; width: 24px; height: 1px; background: rgba(255,180,60,0.2);
+          content: '';
+          width: 24px;
+          height: 1px;
+          background: rgba(0,229,255,0.2);
         }
 
+        /* Info panel */
         .info-panel {
-          grid-column: 2; grid-row: 2;
-          padding: 2.5rem 3rem 2.5rem 2rem;
-          display: flex; flex-direction: column; gap: 1.8rem;
-          position: relative; z-index: 2; overflow-y: auto;
+          grid-column: 2;
+          grid-row: 2;
+          padding: 2.5rem 2.5rem 2.5rem 2rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.8rem;
+          position: relative;
+          z-index: 2;
+          overflow-y: auto;
         }
 
-        .name-block { border-left: 2px solid rgba(255,165,40,0.5); padding-left: 1.2rem; }
+        /* Name block */
+        .name-block {
+          border-left: 2px solid rgba(0,229,255,0.4);
+          padding-left: 1.2rem;
+        }
         .common-name {
-          font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 700;
-          line-height: 1; color: #f5c842; letter-spacing: -0.02em;
+          font-family: 'Baloo 2', cursive;
+          font-size: 2.8rem;
+          font-weight: 800;
+          line-height: 1;
+          color: #00e5ff;
+          text-shadow: 0 0 24px rgba(0,229,255,0.5);
+          letter-spacing: -0.02em;
         }
         .scientific-name {
-          font-family: 'Playfair Display', serif; font-style: italic;
-          font-size: 1rem; color: rgba(232,223,200,0.45); margin-top: 0.4rem;
+          font-family: 'Nunito', sans-serif;
+          font-style: italic;
+          font-size: 1rem;
+          color: rgba(122,179,204,0.7);
+          margin-top: 0.4rem;
         }
         .slovenian-name {
-          font-size: 0.7rem; letter-spacing: 0.1em; color: rgba(232,223,200,0.3);
+          font-size: 0.7rem;
+          letter-spacing: 0.1em;
+          color: rgba(232,244,253,0.3);
           margin-top: 0.3rem;
+          text-transform: uppercase;
         }
 
-        .tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(255,180,60,0.15); }
+        /* Tabs */
+        .tabs {
+          display: flex;
+          gap: 0;
+          border-bottom: 1px solid rgba(0,229,255,0.12);
+        }
         .tab {
-          padding: 0.5rem 1.2rem; font-size: 0.65rem; letter-spacing: 0.18em;
-          text-transform: uppercase; color: rgba(232,223,200,0.35);
-          cursor: pointer; border-bottom: 2px solid transparent;
-          margin-bottom: -1px; transition: all 0.2s;
-          background: none; border-top: none; border-left: none; border-right: none;
+          padding: 0.5rem 1.2rem;
+          font-size: 0.65rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(232,244,253,0.3);
+          cursor: pointer;
+          border-bottom: 2px solid transparent;
+          margin-bottom: -1px;
+          transition: all 0.2s;
+          background: none;
+          border-top: none;
+          border-left: none;
+          border-right: none;
+          font-family: 'Nunito', sans-serif;
         }
-        .tab:hover { color: rgba(232,223,200,0.7); }
-        .tab.active { color: #f5c842; border-bottom-color: #f5c842; }
+        .tab:hover { color: rgba(0,229,255,0.7); }
+        .tab.active { color: #00e5ff; border-bottom-color: #00e5ff; }
 
+        /* Tab content */
         .tab-content { display: flex; flex-direction: column; gap: 1.4rem; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1.5rem; }
         .stat-item { display: flex; flex-direction: column; gap: 0.25rem; }
-        .stat-label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,180,60,0.5); }
-        .stat-value { font-size: 0.88rem; color: rgba(232,223,200,0.9); }
+        .stat-label {
+          font-size: 0.6rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(0,229,255,0.45);
+        }
+        .stat-value { font-size: 0.88rem; color: rgba(232,244,253,0.85); }
 
-        .divider { height: 1px; background: linear-gradient(90deg, rgba(255,165,40,0.3) 0%, transparent 100%); }
+        .divider {
+          height: 1px;
+          background: linear-gradient(90deg, rgba(0,229,255,0.2) 0%, transparent 100%);
+        }
 
-        .description-text { font-size: 0.85rem; line-height: 1.75; color: rgba(232,223,200,0.65); }
+        .description-text {
+          font-size: 0.85rem;
+          line-height: 1.75;
+          color: rgba(232,244,253,0.6);
+        }
 
         .fun-fact {
-          background: rgba(255,165,40,0.05); border: 1px solid rgba(255,165,40,0.12);
-          border-left: 3px solid rgba(255,165,40,0.4); padding: 1rem 1.2rem;
-          border-radius: 0 4px 4px 0;
+          background: rgba(0,229,255,0.04);
+          border: 1px solid rgba(0,229,255,0.1);
+          border-left: 3px solid rgba(0,229,255,0.4);
+          padding: 1rem 1.2rem;
+          border-radius: 0 12px 12px 0;
         }
         .fun-fact-label {
-          font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase;
-          color: rgba(255,165,40,0.5); margin-bottom: 0.5rem;
+          font-size: 0.58rem;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
+          color: rgba(0,229,255,0.5);
+          margin-bottom: 0.5rem;
         }
-        .fun-fact-text { font-size: 0.85rem; line-height: 1.6; color: rgba(232,223,200,0.7); }
+        .fun-fact-text {
+          font-size: 0.85rem;
+          line-height: 1.6;
+          color: rgba(232,244,253,0.65);
+        }
 
         .taxonomy { display: flex; flex-direction: column; gap: 0.5rem; }
         .taxon-row {
-          display: flex; justify-content: space-between; align-items: center;
-          padding: 0.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.4rem 0;
+          border-bottom: 1px solid rgba(255,255,255,0.04);
         }
-        .taxon-rank { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,180,60,0.4); }
-        .taxon-name { font-size: 0.82rem; font-style: italic; color: rgba(232,223,200,0.8); }
+        .taxon-rank {
+          font-size: 0.6rem;
+          letter-spacing: 0.15em;
+          text-transform: uppercase;
+          color: rgba(0,229,255,0.4);
+        }
+        .taxon-name { font-size: 0.82rem; font-style: italic; color: rgba(232,244,253,0.8); }
 
+        /* Skeleton */
         .skeleton {
-          background: rgba(255,255,255,0.05); border-radius: 4px;
+          background: rgba(0,229,255,0.06);
+          border-radius: 8px;
           animation: shimmer 1.5s ease-in-out infinite;
         }
         @keyframes shimmer { 0%,100% { opacity: 0.4; } 50% { opacity: 0.8; } }
 
-        .source-link { font-size: 0.65rem; color: rgba(255,180,60,0.35); text-decoration: none; }
-        .source-link:hover { color: rgba(255,180,60,0.7); }
-
-        .model-error {
-          width: 100%; height: 100%;
-          display: flex; flex-direction: column; align-items: center; justify-content: center;
-          gap: 0.8rem;
+        .source-link {
+          font-size: 0.65rem;
+          color: rgba(0,229,255,0.35);
+          text-decoration: none;
+          transition: color 0.2s;
         }
-        .model-error-icon { font-size: 2.5rem; }
-        .model-error-text { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,100,100,0.6); }
-        .model-error-hint { font-size: 0.7rem; color: rgba(255,255,255,0.3); }
+        .source-link:hover { color: rgba(0,229,255,0.7); }
+
+        /* Loading overlay */
+        .model-loading-overlay {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          z-index: 10;
+          background: rgba(4,13,33,0.85);
+          backdrop-filter: blur(4px);
+        }
+        .model-loading-text {
+          font-size: 0.7rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(0,229,255,0.5);
+          margin-top: 0.8rem;
+          font-family: 'Nunito', sans-serif;
+        }
+
+        /* Error */
+        .fetch-error {
+          font-size: 0.9rem;
+          color: rgba(255,100,100,0.7);
+          padding: 1rem;
+          border: 1px solid rgba(255,100,100,0.2);
+          border-radius: 12px;
+          background: rgba(255,100,100,0.05);
+        }
 
         @media (max-width: 768px) {
           .page { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
-          .header { padding: 1.5rem 1.5rem 0; }
+          .header { padding: 1rem 1.5rem; }
           .viewport { grid-column: 1; grid-row: 2; }
-          .canvas-wrap { height: 300px; }
+          .canvas-wrap { height: 300px; border-right: none; border-bottom: 1px solid rgba(0,229,255,0.08); }
           .info-panel { grid-column: 1; grid-row: 3; padding: 1.5rem; }
-          .common-name { font-size: 2.2rem; }
+          .common-name { font-size: 2rem; }
         }
       `}</style>
 
@@ -233,74 +355,40 @@ export default function FishDetails() {
         {/* Bubbles */}
         <div className="bubbles">
           {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="bubble"
-              style={{
-                width: `${6 + (i % 4) * 5}px`,
-                height: `${6 + (i % 4) * 5}px`,
-                left: `${8 + i * 7.5}%`,
-                animationDuration: `${6 + (i % 5) * 2}s`,
-                animationDelay: `${(i * 1.1) % 7}s`,
-              }}
-            />
+            <div key={i} className="bubble" style={{
+              width: `${8 + (i % 4) * 5}px`,
+              height: `${8 + (i % 4) * 5}px`,
+              left: `${5 + i * 8}%`,
+              animationDuration: `${8 + (i % 5) * 2}s`,
+              animationDelay: `${(i * 1.1) % 7}s`,
+            }} />
           ))}
         </div>
 
         {/* Header */}
         <header className="header">
-          <span className="header-tag">Aquarium</span>
+          <span className="header-tag">🌊 Aquarium</span>
           <span className="header-title">Species Detail</span>
         </header>
 
         {/* 3D Viewport */}
         <div className="viewport">
           <div className="canvas-wrap">
-
-            {/* Loading overlay */}
             {modelLoading && (
-              <div style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                zIndex: 10,
-                background: "rgba(5, 17, 31, 0.8)",
-              }}>
-                <img
-                  src="/loading_spinner_transparent.gif"
-                  alt="Loading model..."
-                  style={{ height: "60px", width: "60px" }}
-                />
-                <span style={{
-                  fontSize: "0.7rem",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,180,60,0.5)",
-                  marginTop: "0.8rem",
-                }}>
-                  Loading 3D Model…
-                </span>
+              <div className="model-loading-overlay">
+                <img src="/loading_spinner_transparent.gif" alt="Loading model..." style={{ height: "60px", width: "60px" }} />
+                <span className="model-loading-text">Loading 3D Model…</span>
               </div>
             )}
-
             <Canvas camera={{ position: [0, 0.5, 3], fov: 45 }}>
-              <ambientLight color={0xfff4e0} intensity={1.2} />
-              <directionalLight color={0xffd580} position={[3, 4, 3]} intensity={2.5} castShadow />
-              <directionalLight color={0x80c8ff} position={[-3, 1, -2]} intensity={1.0} />
-              <directionalLight color={0xff9040} position={[0, -2, -3]} intensity={0.8} />
-
+              <ambientLight color={0x00e5ff} intensity={0.6} />
+              <directionalLight color={0xffffff} position={[3, 4, 3]} intensity={2.5} castShadow />
+              <directionalLight color={0x00bcd4} position={[-3, 1, -2]} intensity={1.0} />
+              <directionalLight color={0x0a2a6e} position={[0, -2, -3]} intensity={0.8} />
               <Suspense fallback={null}>
-                <FishModel modelPath={modelPath}  onLoaded={handleModelLoaded}/>
+                <FishModel modelPath={modelPath} onLoaded={handleModelLoaded} />
               </Suspense>
-
-              <OrbitControls
-                enableZoom={false}
-                autoRotate
-                autoRotateSpeed={2}
-              />
+              <OrbitControls enableZoom={false} autoRotate autoRotateSpeed={2} />
             </Canvas>
           </div>
           <div className="viewport-badge">3D Interactive Model</div>
@@ -308,24 +396,18 @@ export default function FishDetails() {
 
         {/* Info Panel */}
         <aside className="info-panel">
-
-          {/* Name block */}
           <div className="name-block">
             {loading ? (
               <>
                 <div className="skeleton" style={{ height: "3rem", width: "70%", marginBottom: "0.5rem" }} />
-                
-                <div style={{display: "flex", justifyContent : "center", alignItems : "center", flexDirection : "column"}}>
-                  <img src="/loading_spinner_transparent.gif" alt="Loading..." style={{height : "50px", width : "50px"}}/>
-                  <em>Fetching data from back end ...</em>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: "0.5rem", padding: "1rem 0" }}>
+                  <img src="/loading_spinner_transparent.gif" alt="Loading..." style={{ height: "50px", width: "50px" }} />
+                  <em style={{ color: "rgba(0,229,255,0.4)", fontSize: "0.75rem", letterSpacing: "0.1em" }}>Fetching data from back end…</em>
                 </div>
-                
                 <div className="skeleton" style={{ height: "1rem", width: "50%" }} />
               </>
             ) : fetchError ? (
-              <p style={{ color: "rgba(255,100,100,0.7)", fontSize: "0.9rem" }}>
-                {"Error while getting data from back end"}
-              </p>
+              <p className="fetch-error">Error while getting data from back end</p>
             ) : (
               <>
                 <h1 className="common-name">{fishData?.commonName}</h1>
@@ -335,7 +417,6 @@ export default function FishDetails() {
             )}
           </div>
 
-          {/* Tabs + content */}
           {!loading && !fetchError && fishData && (
             <>
               <div className="tabs">
@@ -351,7 +432,6 @@ export default function FishDetails() {
               </div>
 
               <div className="tab-content">
-
                 {activeTab === "info" && (
                   <>
                     <div className="stats-grid">
@@ -367,38 +447,27 @@ export default function FishDetails() {
                         </div>
                       ))}
                     </div>
-
                     <div className="divider" />
-
                     {fishData.behaviour && (
                       <div className="fun-fact">
                         <div className="fun-fact-label">✦ Behaviour</div>
                         <p className="fun-fact-text">{fishData.behaviour}</p>
                       </div>
                     )}
-
                     {fishData.funFact && (
                       <div className="fun-fact">
                         <div className="fun-fact-label">✦ Did you know</div>
                         <p className="fun-fact-text">{fishData.funFact}</p>
                       </div>
                     )}
-
-                    <a
-                      href={fishData.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="source-link"
-                    >
+                    <a href={fishData.sourceUrl} target="_blank" rel="noreferrer" className="source-link">
                       ↗ View original source (yoursea.org)
                     </a>
                   </>
                 )}
 
                 {activeTab === "description" && (
-                  <p className="description-text">
-                    {fishData.description || "No description available."}
-                  </p>
+                  <p className="description-text">{fishData.description || "No description available."}</p>
                 )}
 
                 {activeTab === "taxonomy" && (
@@ -418,13 +487,12 @@ export default function FishDetails() {
                     ))}
                   </div>
                 )}
-
               </div>
             </>
           )}
-
         </aside>
-          {!loading && !fetchError && fishData && (
+
+        {!loading && !fetchError && fishData && (
           <GeminiChat fishData={fishData} />
         )}
       </div>
