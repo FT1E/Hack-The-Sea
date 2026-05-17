@@ -2,14 +2,26 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
-  background: linear-gradient(180deg, #0a1628 0%, #0d2b4e 100%);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(180deg, #0a1f44 0%, #040d21 100%);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(0, 229, 255, 0.12),
+    inset 0 0 40px rgba(0, 229, 255, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fish-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 229, 255, 0.3),
+    0 0 24px rgba(0, 229, 255, 0.15);
 }
 
 .fish-canvas-placeholder {
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0);
+  background: transparent;
 }
