@@ -1,4 +1,4 @@
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
@@ -7,8 +7,15 @@ import GeminiChat from "./GeminiChat";
 
 import server_api from '../services/backend_api'
 
-function FishModel({ modelPath }) {
+function FishModel({ modelPath, onLoaded }) {
   const { scene } = useGLTF(modelPath);
+
+  useEffect(() => {
+    if (scene) {
+      onLoaded(); // Signal that model is ready
+    }
+  }, [scene, onLoaded]);
+
   return (
     <primitive
       object={scene}
@@ -28,6 +35,17 @@ export default function FishDetails() {
   const [fetchError, setFetchError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("info");
+
+  const [modelLoading, setModelLoading] = useState(true); // <-- NEW
+
+  // Reset model loading when slug changes
+  useEffect(() => {
+    setModelLoading(true);
+  }, [slug]);
+
+  const handleModelLoaded = useCallback(() => {
+    setModelLoading(false);
+  }, []);
 
   const fetchData = async () =>
   {
@@ -238,6 +256,36 @@ export default function FishDetails() {
         {/* 3D Viewport */}
         <div className="viewport">
           <div className="canvas-wrap">
+
+            {/* Loading overlay */}
+            {modelLoading && (
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 10,
+                background: "rgba(5, 17, 31, 0.8)",
+              }}>
+                <img
+                  src="/loading_spinner_transparent.gif"
+                  alt="Loading model..."
+                  style={{ height: "60px", width: "60px" }}
+                />
+                <span style={{
+                  fontSize: "0.7rem",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: "rgba(255,180,60,0.5)",
+                  marginTop: "0.8rem",
+                }}>
+                  Loading 3D Model…
+                </span>
+              </div>
+            )}
+
             <Canvas camera={{ position: [0, 0.5, 3], fov: 45 }}>
               <ambientLight color={0xfff4e0} intensity={1.2} />
               <directionalLight color={0xffd580} position={[3, 4, 3]} intensity={2.5} castShadow />
@@ -245,7 +293,7 @@ export default function FishDetails() {
               <directionalLight color={0xff9040} position={[0, -2, -3]} intensity={0.8} />
 
               <Suspense fallback={null}>
-                <FishModel modelPath={modelPath} />
+                <FishModel modelPath={modelPath}  onLoaded={handleModelLoaded}/>
               </Suspense>
 
               <OrbitControls
