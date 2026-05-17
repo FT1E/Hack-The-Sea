@@ -27,6 +27,13 @@ export default function RegionScreen({ title, fish, nextRoute }) {
       </button>
 
 
+      <button className="game-btn"
+        oonClick={() => navigate('/game')}>
+
+          Meet YOUSea 
+      </button>
+
+
         {
           <button className="nav-btn" onClick={() => navigate('/')}>
             {'Back to map'}

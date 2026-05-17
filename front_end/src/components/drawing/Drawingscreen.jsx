@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate } from 'react-router-dom'
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
-import * as tmImage from "@teachablemachine/image";                // ✅ FIX 1: static import
+import * as tmImage from "@teachablemachine/image";
 import { FISH_CONFIG, TEACHABLE_MACHINE_URL } from "./fishConfig";
 import "./DrawingScreen.css";
 import { Box3, Vector3 } from "three";
@@ -12,12 +12,11 @@ const BRUSH_SIZES  = [4, 8, 14, 22];
 const PEEK_OPACITY_IDLE   = 0.12;
 const PEEK_OPACITY_ACTIVE = 0.50;
 
-// ✅ FIX 2: fallback path so useGLTF never receives null
 const FALLBACK_MODEL = Object.values(FISH_CONFIG)[0]?.model || "";
 
 function FishModel({ modelPath }) {
   const groupRef = useRef();
-  const { scene } = useGLTF(modelPath || FALLBACK_MODEL);          // ✅ never null
+  const { scene } = useGLTF(modelPath || FALLBACK_MODEL);
 
   useEffect(() => {
     if (!scene) return;
@@ -141,7 +140,6 @@ export default function DrawingScreen() {
     setShowResult(false);
   }, []);
 
-  // ✅ FIX 1 continued: tmImage is now a static import, call .load directly
   const loadTMModel = useCallback(async () => {
     if (tmModel || modelLoading) return tmModel;
     setModelLoading(true);
@@ -180,19 +178,8 @@ export default function DrawingScreen() {
           fishId:     p.className,
           confidence: Math.round(p.probability * 100),
         })),
-      
-      });
-      console.log({
-        fishId:     top.className,
-        confidence: Math.round(top.probability * 100),
-        allGuesses: sorted.slice(0, 3).map((p) => ({
-          fishId:     p.className,
-          confidence: Math.round(p.probability * 100),
-        })),
-      
       });
       setShowResult(true);
-
     } catch (err) {
       console.error("Prediction error:", err);
       alert("Something went wrong with the identification. Try again!");
@@ -212,9 +199,24 @@ export default function DrawingScreen() {
       </div>
 
       <header className="ds-header">
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: "0.5rem", padding: "1rem 0" }}>  
-          <button className="nav-btn" onClick={() => navigate(-1)}>
-            <span className="ds-header-text"> {'Back to previous page'} </span>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: "0.5rem", padding: "1rem 0" }}>
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              background: 'none',
+              border: '1px solid rgba(0,229,255,0.2)',
+              borderRadius: '50px',
+              color: 'rgba(0,229,255,0.6)',
+              fontFamily: 'Nunito, sans-serif',
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              padding: '0.3rem 0.8rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.3rem',
+            }}
+          >
+            ← Back
           </button>
         </div>
         <div className="ds-header-text">
@@ -224,8 +226,6 @@ export default function DrawingScreen() {
       </header>
 
       <div className="ds-canvas-wrapper">
-
-        {/* Panel 1 — ghost model */}
         <div
           className="ds-three-panel"
           style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
@@ -237,7 +237,6 @@ export default function DrawingScreen() {
               transition: isPeeking ? "opacity 0.15s ease-out" : "opacity 0.35s ease-in",
             }}
           >
-            {/* ✅ FIX 2: only mount Canvas when model path is valid */}
             {fish?.model && (
               <Canvas
                 camera={{ position: [0, 0, 3], fov: 45 }}
@@ -254,7 +253,6 @@ export default function DrawingScreen() {
           <div className="ds-canvas-border" />
         </div>
 
-        {/* Panel 2 — drawing canvas */}
         <div
           className="ds-draw-panel"
           style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
@@ -274,7 +272,6 @@ export default function DrawingScreen() {
           />
           <div className="ds-canvas-border" />
         </div>
-
       </div>
 
       <div className="ds-toolbar">
